@@ -16,9 +16,7 @@ jobs:
         with:
           node-version: "10.x"
 
-      - run: npm ci
-
-      - run: npm test
+      - run: npm install
 
       - run: npm run generate
 
