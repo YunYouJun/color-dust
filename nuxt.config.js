@@ -1,6 +1,16 @@
-import colors from 'vuetify/es5/util/colors'
+import pkg from './package.json'
+
+const routerBase =
+  process.env.DEPLOY_ENV === 'GH_PAGES'
+    ? {
+        router: {
+          base: '/' + pkg.name + '/'
+        }
+      }
+    : {}
 
 export default {
+  ...routerBase,
   mode: 'spa',
   /*
    ** Headers of the page
