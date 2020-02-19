@@ -1,11 +1,15 @@
 # color-dust
 
-> Image theme color extraction.
+Image theme color extraction.
 
-色尘，佛教语。“六尘”之一。即眼根（视觉）所触及的尘境。
-
+> 色尘，佛教语。“六尘”之一。即眼根（视觉）所触及的尘境。
+>
 > 色尘知有数，劫烬岂无年。
 > —— 唐·李绅《题法华寺》
+
+![GitHub Pages](https://github.com/YunYouJun/color-dust/workflows/GitHub%20Pages/badge.svg)
+
+Demo: <https://yunyoujun.cn/color-dust/>
 
 ## Color
 
