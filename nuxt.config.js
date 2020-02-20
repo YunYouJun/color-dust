@@ -49,6 +49,7 @@ export default {
     '@nuxtjs/eslint-module',
     // Doc: https://github.com/nuxt-community/stylelint-module
     '@nuxtjs/stylelint-module',
+    // https://github.com/nuxt-community/vuetify-module
     '@nuxtjs/vuetify'
   ],
   /*
@@ -71,7 +72,10 @@ export default {
    ** https://github.com/nuxt-community/vuetify-module
    */
   vuetify: {
-    customVariables: ['~/assets/variables.scss']
+    customVariables: ['~/assets/variables.scss'],
+    defaultAssets: {
+      icons: 'md'
+    }
   },
   /*
    ** Build configuration

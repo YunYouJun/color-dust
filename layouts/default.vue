@@ -18,12 +18,12 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer> -->
-    <v-app-bar fixed app>
+    <v-app-bar app fixed>
       <!-- <v-app-bar-nav-icon @click.stop="drawer = !drawer" /> -->
       <v-toolbar-title v-text="title" />
       <v-spacer />
       <v-btn icon @click.stop="$vuetify.theme.dark = !$vuetify.theme.dark">
-        <v-icon>mdi-invert-colors</v-icon>
+        <v-icon>invert_colors</v-icon>
       </v-btn>
     </v-app-bar>
     <v-content>

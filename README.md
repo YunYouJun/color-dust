@@ -18,6 +18,11 @@ Demo: <https://yunyoujun.cn/color-dust/>
 - [ ] secondary
 - [ ] info
 
+## Ref
+
+- [图像颜色提取](https://codepen.io/zhaojun/post/cc)
+- [colorful-color](https://github.com/woshizja/colorful-color)
+
 ## Todo
 
 [TensorFlow.js](https://tensorflow.google.cn/js/)
