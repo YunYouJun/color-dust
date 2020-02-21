@@ -66,17 +66,17 @@ export default {
 }
 
 ::-webkit-scrollbar {
-  width: 1rem;
+  width: 0.9rem;
   background-color: #f5f5f5;
 }
 
 ::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
   background-color: #f5f5f5;
 }
 
 ::-webkit-scrollbar-thumb {
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
   background-color: var(--theme-color);
 }
 </style>

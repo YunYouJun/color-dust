@@ -2,23 +2,34 @@
   <div class="info-wrap">
     <v-alert border="left" colored-border color="success">
       Found about
-      <span class="info">{this.props.processInfo.colors}</span>
+      <span class="font-weight-bold">{{
+        $store.state.processInfo.colors
+      }}</span>
       colors in your image.
     </v-alert>
-    <v-alert border="left" colored-border color="info" elevation="2">
+    <v-alert border="left" colored-border color="info">
       Color Census Time is
-      <span class="info">{this.props.processInfo.colors}</span>
+      <span class="font-weight-bold">{{
+        $store.state.processInfo.censusTime
+      }}</span>
       ms.
     </v-alert>
-    <v-alert border="left" colored-border color="warning" elevation="2">
+    <v-alert border="left" colored-border color="warning">
       K-Means iterated
-      <span class="info">{this.props.processInfo.kmeansIteration}</span> times
-      with cost of
-      <span class="info">{this.props.processInfo.kmeansTime}</span>ms.
+      <span class="font-weight-bold">{{
+        $store.state.processInfo.kmeansIteration
+      }}</span>
+      times with cost of
+      <span class="font-weight-bold">{{
+        $store.state.processInfo.kmeansTime
+      }}</span>
+      ms.
     </v-alert>
-    <v-alert border="left" colored-border color="error" elevation="2">
+    <v-alert border="left" colored-border color="error">
       The top5 colors account for
-      <span class="info">{this.props.processInfo.top5Count.toFixed(1)}%</span>
+      <span class="font-weight-bold"
+        >{{ $store.state.processInfo.top5Count.toFixed(2) }}%</span
+      >
       of total.
     </v-alert>
   </div>

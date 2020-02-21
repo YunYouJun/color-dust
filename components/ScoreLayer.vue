@@ -97,8 +97,7 @@ export default {
 }
 
 .circle {
-  width: 100vw;
-  max-width: 450px;
+  width: 90vw;
   height: 100vw;
   max-height: 450px;
 }

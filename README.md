@@ -25,7 +25,8 @@ Demo: <https://yunyoujun.cn/color-dust/>
 
 ## Todo
 
-[TensorFlow.js](https://tensorflow.google.cn/js/)
+- [ ] update [brain]
+- [ ] [TensorFlow.js](https://tensorflow.google.cn/js/)
 
 ## Thanks
 

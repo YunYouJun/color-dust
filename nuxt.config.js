@@ -28,6 +28,11 @@ export default {
       }
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+    // script: [
+    //   {
+    //     src: ''
+    //   }
+    // ]
   },
   /*
    ** Customize the progress-bar color
