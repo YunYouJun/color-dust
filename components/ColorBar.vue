@@ -20,7 +20,7 @@
         <v-divider class="mb-2"></v-divider>
       </h3>
       <div class="color-wrap">
-        <v-card height="80" :style="gradient"></v-card>
+        <v-card height="80" :style="gradient" ripple></v-card>
       </div>
     </v-alert>
   </div>

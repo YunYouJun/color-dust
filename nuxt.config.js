@@ -80,6 +80,11 @@ export default {
     customVariables: ['~/assets/variables.scss'],
     defaultAssets: {
       icons: 'md'
+    },
+    theme: {
+      options: {
+        customProperties: true
+      }
     }
   },
   /*

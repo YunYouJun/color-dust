@@ -63,5 +63,7 @@ export const mutations = {
       top5Count: 0,
       showQr: false
     }
+    state.mainColor = ''
+    state.averageColor = ''
   }
 }
