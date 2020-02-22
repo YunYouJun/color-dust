@@ -18,6 +18,11 @@
     <v-col cols="12" class="mt-5">
       <image-info></image-info>
     </v-col>
+    <v-col cols="12">
+      <canvas-bubble-chart
+        :colors="$store.state.colorsInfo"
+      ></canvas-bubble-chart>
+    </v-col>
   </v-row>
 </template>
 
@@ -32,13 +37,15 @@ import ScoreLayer from '~/components/ScoreLayer'
 import ColorBar from '~/components/ColorBar'
 import ImageInfo from '~/components/ImageInfo'
 import ColorCard from '~/components/ColorCard'
+import CanvasBubbleChart from '~/components/CanvasBubbleChart'
 export default {
   components: {
     ImageShowcase,
     ScoreLayer,
     ColorBar,
     ImageInfo,
-    ColorCard
+    ColorCard,
+    CanvasBubbleChart
   },
   computed: {
     mcProps() {

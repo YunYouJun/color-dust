@@ -1,5 +1,6 @@
 export const state = () => ({
   clusterColors: [],
+  colorsInfo: [],
   loopColors: [
     ['rgb(222,244,255)', 'rgb(183,189,255)'],
     ['rgba(27,72,177,0.3)', 'rgba(27,72,177,0.7)'],
@@ -45,6 +46,9 @@ export const mutations = {
   },
   setProcessInfo(state, processInfo) {
     state.processInfo = processInfo
+  },
+  setColorsInfo(state, colorsInfo) {
+    state.colorsInfo = colorsInfo
   },
   resetApp(state) {
     state.clusterColors = []

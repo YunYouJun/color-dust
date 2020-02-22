@@ -1,6 +1,10 @@
 <template>
   <div>
-    <v-card class="showcase-wrap">
+    <v-card
+      class="showcase-wrap"
+      :class="{ censused: bgColor }"
+      :style="{ backgroundColor: bgColor }"
+    >
       <canvas ref="canvasShowcase" class="showcase"></canvas>
     </v-card>
     <v-slider
@@ -42,8 +46,8 @@ import { rgbToHsl, hslToRgb, rgbToHex } from '~/assets/js/utils.js'
 export default {
   data() {
     return {
+      bgColor: '',
       file: null,
-      bgC: '',
       K: 6,
       showSave: false,
       isLoading: false,
@@ -155,6 +159,7 @@ export default {
       }
     },
     handleClearClick() {
+      this.bgColor = ''
       this.clearCanvas()
       this.$store.commit('resetApp')
     },
@@ -475,13 +480,13 @@ export default {
       // console.log('time for K-means: ', processInfo.kmeansTime)
       const info = this.imageScore(colorsInfo)
       processInfo.top5Count = info.top5Count * 100
-      this.colorsInfo = colorsInfo
+      this.$store.commit('setColorsInfo', colorsInfo)
       this.$store.commit('setClusterColors', clusterRes1)
       this.$store.commit('setMainColor', mainColor)
       this.$store.commit('setAverageColor', averageColor)
       this.$store.commit('setProcessInfo', processInfo)
       this.updateLoopColors(mainColor, clusterRes[0])
-      this.bgC = mainColorA
+      this.bgColor = mainColorA
       // draw
       this.drawPalette()
     },
@@ -669,21 +674,21 @@ export default {
   height: 460px;
   background-color: transparent;
 
-  &.censused {
-    z-index: 0;
-
-    &::after {
-      display: none;
-      animation: none;
-    }
-  }
-
   &-wrap {
     position: relative;
     overflow: hidden;
     z-index: 0;
     text-align: center;
     line-height: 0;
+
+    &.censused {
+      z-index: 0;
+
+      &::after {
+        display: none;
+        animation: none;
+      }
+    }
 
     &::after {
       position: absolute;

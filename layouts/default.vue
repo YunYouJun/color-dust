@@ -19,9 +19,6 @@
       </v-list>
     </v-navigation-drawer> -->
     <v-app-bar app fixed>
-      <v-btn icon>
-        <v-icon>colorize</v-icon>
-      </v-btn>
       <!-- <v-app-bar-nav-icon @click.stop="drawer = !drawer" /> -->
       <v-toolbar-title v-text="title" />
       <v-spacer />
