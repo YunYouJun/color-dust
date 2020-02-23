@@ -7,31 +7,33 @@
     >
       <canvas ref="canvasShowcase" class="showcase"></canvas>
     </v-card>
-    <v-slider
-      v-model="K"
-      class="mt-5"
-      min="3"
-      max="20"
-      thumb-label="always"
-      prepend-icon="color_lens"
-      dense
-      hint="How many colors?"
-      @end="censusImage"
-    ></v-slider>
-    <v-file-input
-      v-model="file"
-      accept="image/*"
-      placeholder="Upload image to parse."
-      prepend-icon="photo"
-      small-chips
-      show-size
-      outlined
-      dense
-      :loading="isLoading"
-      @change="readFile"
-      @click:clear="handleClearClick"
-    >
-    </v-file-input>
+    <v-alert border="left" class="mt-4">
+      <v-slider
+        v-model="K"
+        class="mt-5"
+        min="3"
+        max="20"
+        thumb-label="always"
+        prepend-icon="color_lens"
+        dense
+        hint="How many colors?"
+        @end="censusImage"
+      ></v-slider>
+      <v-file-input
+        v-model="file"
+        accept="image/*"
+        placeholder="Upload image to parse."
+        prepend-icon="photo"
+        small-chips
+        show-size
+        outlined
+        dense
+        hide-details
+        :loading="isLoading"
+        @change="readFile"
+        @click:clear="handleClearClick"
+      ></v-file-input>
+    </v-alert>
     <v-snackbar v-model="snackbar">
       {{ message }}
       <v-btn text @click="snackbar = false">
@@ -159,7 +161,7 @@ export default {
       }
     },
     handleClearClick() {
-      this.bgColor = ''
+      this.$store.commit('theme/setPrimaryColor', '')
       this.clearCanvas()
       this.$store.commit('resetApp')
     },
@@ -331,9 +333,13 @@ export default {
       }
     },
     censusImage() {
+      if (!this.file) {
+        return
+      }
       const canvas = this.$refs.canvasShowcase
       const ctx = this.ctx
       const pixelRatio = this.pixelRatio
+
       let beginTime = new Date().getTime()
       const processInfo = {
         colors: 0,
@@ -466,14 +472,33 @@ export default {
         s: averageColor[1],
         l: averageColor[2]
       }
-      const mainColorA =
+
+      this.bgColor =
         'rgba(' +
         colorsInfo[0].r +
         ',' +
         colorsInfo[0].g +
         ',' +
         colorsInfo[0].b +
-        ',0.62)'
+        ',0.3)'
+
+      const primaryColor =
+        'rgba(' +
+        colorsInfo[0].r +
+        ',' +
+        colorsInfo[0].g +
+        ',' +
+        colorsInfo[0].b +
+        ',0.8)'
+
+      const accentColor =
+        'rgba(' +
+        colorsInfo[2].r +
+        ',' +
+        colorsInfo[2].g +
+        ',' +
+        colorsInfo[2].b +
+        ',0.8)'
 
       processInfo.kmeansTime = +new Date() - beginTime
       processInfo.kmeansIteration = clusterRes[1]
@@ -486,7 +511,9 @@ export default {
       this.$store.commit('setAverageColor', averageColor)
       this.$store.commit('setProcessInfo', processInfo)
       this.updateLoopColors(mainColor, clusterRes[0])
-      this.bgColor = mainColorA
+      // theme
+      this.$store.commit('theme/setPrimaryColor', primaryColor)
+      this.$store.commit('theme/setAccentColor', accentColor)
       // draw
       this.drawPalette()
     },

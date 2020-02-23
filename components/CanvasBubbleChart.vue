@@ -12,12 +12,7 @@
         @click="handleCanvasClick"
       ></canvas>
       <v-card-actions class="justify-center">
-        <v-chip
-          color="success"
-          outlined
-          class="text-uppercase"
-          @click="copyColorHex"
-        >
+        <v-chip color="success" class="text-uppercase" @click="copyColorHex">
           <v-icon left>colorize</v-icon>
           <span ref="selectColor">{{ selectColor }}</span>
         </v-chip>
@@ -25,7 +20,7 @@
     </v-card>
     <v-snackbar v-model="snackbar" color="success" :timeout="1000" top>
       <div class="text-center" style="width:100%">
-        Copy Hex Color {{ selectColor }} successfully!
+        Copy Color {{ selectColor }} successfully!
       </div>
     </v-snackbar>
   </div>
@@ -60,7 +55,11 @@ export default {
   watch: {
     colors() {
       if (this.colors.length > 0) {
-        this.renderBubble(this.colors)
+        const bubbles = this.processColors(this.colors)
+        this.renderBubble(bubbles)
+      } else {
+        const canvas = this.$refs.bubbleChart
+        this.ctx.clearRect(0, 0, canvas.width, canvas.height)
       }
     }
   },
@@ -78,8 +77,10 @@ export default {
       canvas.height / 2 - 15 * pixelRatio
     )
     this.iterations = 2
-    this.time = 2000
+    this.time = 400
     this.density = 0.1
+    this.initBubbles(this.createDataset())
+    this.renderBubble(this.bubbles)
   },
   methods: {
     copyColorHex() {
@@ -157,8 +158,12 @@ export default {
         } else {
           this.selectColor = '#'
         }
+      } else if (this.colors.length) {
+        const bubbles = this.processColors(this.colors)
+        this.renderBubble(bubbles)
       } else {
-        this.renderBubble(this.colors)
+        this.initBubbles(this.createDataset())
+        this.renderBubble(this.bubbles)
       }
     },
     processColors(colors) {
@@ -178,13 +183,7 @@ export default {
       // console.log("bubbles: ", dataset.length)
       return dataset
     },
-    renderBubble(colors) {
-      const canvas = this.$refs.bubbleChart
-      if (colors.length === 0) {
-        this.ctx.clearRect(0, 0, canvas.width, canvas.height)
-        return
-      }
-      const bubbles = this.processColors(colors)
+    renderBubble(bubbles) {
       if (bubbles && bubbles.length > 0) {
         this.initBubbles(bubbles)
       }
@@ -278,8 +277,8 @@ export default {
       const now = +new Date()
       const scale = (now - this.beginTime) * this.speed
       const canvas = this.$refs.bubbleChart
-      const bubbles = this.bubbles
       const ctx = this.ctx
+      const bubbles = this.bubbles
       let len = bubbles.length
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
@@ -329,6 +328,25 @@ export default {
         x: x - bbox.left,
         y: y - bbox.top
       }
+    },
+
+    createDataset() {
+      const dataset = []
+      for (let i = 0; i < 100; i++) {
+        dataset.push({
+          weight: Math.floor(Math.random() * 100),
+          color:
+            'rgb(' +
+            Math.floor(Math.random() * 255) +
+            ',' +
+            Math.floor(Math.random() * 255) +
+            ',' +
+            Math.floor(Math.random() * 255) +
+            ')',
+          opacity: Math.random()
+        })
+      }
+      return dataset
     }
   }
 }

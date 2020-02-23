@@ -67,7 +67,7 @@
         </text>
       </svg>
     </div>
-    <v-alert dense outlined dismissible type="info" prominent>
+    <v-alert dense dismissible type="info" prominent>
       <div class="subtitle-1">Always believe in your work.</div>
       <span class="body-2">
         Scoring is based on COLOR of image. If the result didn't satisfy you,
@@ -94,10 +94,11 @@ export default {
 <style lang="scss">
 .wrap {
   text-align: center;
+  width: 100%;
 }
 
 .circle {
-  width: 90vw;
+  width: 100%;
   height: 100vw;
   max-height: 450px;
 }
