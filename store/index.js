@@ -49,25 +49,31 @@ export const mutations = {
   },
   setColorsInfo(state, colorsInfo) {
     state.colorsInfo = colorsInfo
-  },
-  resetApp(state) {
-    state.clusterColors = []
-    state.loopColors = [
+  }
+}
+
+export const actions = {
+  resetApp({ commit }) {
+    commit('setClusterColors', [])
+    commit('setLoopColors', [
       ['rgb(222,244,255)', 'rgb(183,189,255)'],
       ['rgba(27,72,177,0.3)', 'rgba(27,72,177,0.7)'],
       ['rgba(74,192,223,0.3)', 'rgba(74,192,223,0.7)'],
       ['rgba(140,114,192,0.3)', 'rgba(140,114,192,0.7)']
-    ]
-    state.score = ''
-    state.processInfo = {
+    ])
+    commit('setScore', '')
+    commit('setProcessInfo', {
       colors: 0,
       censusTime: 0,
       kmeansIteration: 0,
       kmeansTime: 0,
       top5Count: 0,
       showQr: false
-    }
-    state.mainColor = ''
-    state.averageColor = ''
+    })
+    commit('setMainColor', '')
+    commit('setAverageColor', '')
+    // theme
+    commit('theme/setPrimaryColor', '')
+    commit('theme/setAccentColor', '')
   }
 }

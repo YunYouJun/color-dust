@@ -1,5 +1,5 @@
 <template>
-  <v-app :style="{ backgroundColor: getBgColor }">
+  <v-app :style="{ backgroundColor: getBgColor, '--theme-color': getBgColor }">
     <!-- <v-navigation-drawer v-model="drawer" fixed app>
       <v-list>
         <v-list-item
@@ -69,17 +69,17 @@ export default {
 
 <style lang="scss">
 :root {
-  --theme-color: #555;
+  --theme-color: #333;
 }
 
 ::-webkit-scrollbar {
-  width: 0.9rem;
-  background-color: #f5f5f5;
+  width: 0.8rem;
+  background-color: transparent;
 }
 
 ::-webkit-scrollbar-track {
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
-  background-color: #f5f5f5;
+  background-color: transparent;
 }
 
 ::-webkit-scrollbar-thumb {

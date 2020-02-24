@@ -161,9 +161,8 @@ export default {
       }
     },
     handleClearClick() {
-      this.$store.commit('theme/setPrimaryColor', '')
       this.clearCanvas()
-      this.$store.commit('resetApp')
+      this.$store.dispatch('resetApp')
     },
     kMC(colors, seeds, maxStep) {
       let iterationCount = 0
