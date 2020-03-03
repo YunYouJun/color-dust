@@ -35,7 +35,7 @@
 </style>
 
 <script>
-import { hslToRgb, rgbToHex } from '~/assets/js/utils'
+import { hslToRgb, rgbToHex } from '~/packages/color-dust/utils'
 export default {
   props: {
     colors: {

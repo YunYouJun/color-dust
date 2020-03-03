@@ -1,0 +1,23 @@
+{
+  "name": "color-dust",
+  "version": "0.0.1",
+  "description": "Census color info from image",
+  "main": "index.js",
+  "author": "YunYouJun <me@yunyoujun.cn>",
+  "license": "MIT",
+  "homepage": "https://github.com/YunYouJun/color-dust/packages/color-dust#readme",
+  "bugs": {
+    "url": "https://github.com/YunYouJun/color-dust/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YunYouJun/color-dust.git",
+    "directory": "packages/color-dust"
+  },
+  "keyword": [
+    "census",
+    "color",
+    "info",
+    "ai"
+  ]
+}

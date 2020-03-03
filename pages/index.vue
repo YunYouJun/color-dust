@@ -27,10 +27,7 @@
 </template>
 
 <script>
-// utils
-import brain from 'brain'
-import { network1, network2 } from '~/assets/js/trainData.js'
-import { hslToRgb, rgbToHex } from '~/assets/js/utils.js'
+import { hslToRgb, rgbToHex } from '~/packages/color-dust/utils'
 // components
 import ImageShowcase from '~/components/ImageShowcase'
 import ScoreLayer from '~/components/ScoreLayer'
@@ -54,14 +51,6 @@ export default {
     acProps() {
       return this.colorToProps(this.$store.state.averageColor)
     }
-  },
-  mounted() {
-    this.net = new brain.NeuralNetwork()
-    this.net2 = new brain.NeuralNetwork()
-    this.net.fromJSON(network1)
-    this.net2.fromJSON(network2)
-    this.$store.commit('setNetwork', this.net)
-    this.$store.commit('setNetwork2', this.net2)
   },
   methods: {
     colorToProps(color) {

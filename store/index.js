@@ -16,8 +16,6 @@ export const state = () => ({
     top5Count: 0,
     showQr: false
   },
-  net: null,
-  net2: null,
   mainColor: '',
   averageColor: ''
 })
@@ -25,12 +23,6 @@ export const state = () => ({
 export const mutations = {
   setScore(state, score) {
     state.score = score
-  },
-  setNetwork(state, net) {
-    state.net = net
-  },
-  setNetwork2(state, net2) {
-    state.net2 = net2
   },
   setLoopColors(state, loopColors) {
     state.loopColors = loopColors
