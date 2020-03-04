@@ -3,24 +3,22 @@ import { rgbToHsl, hslToRgb, rgbToHex } from './utils'
 // train net
 import { network1, network2 } from './trainData'
 export default class ColorDust {
-  constructor(canvas) {
+  constructor(canvas, K) {
+    // data
     this.net = new brain.NeuralNetwork()
     this.net2 = new brain.NeuralNetwork()
     this.net.fromJSON(network1)
     this.net2.fromJSON(network2)
-    if (canvas) {
-      this.canvas = canvas
-    } else {
-      this.canvas = document.createElement('canvas')
-    }
+    // canvas
+    this.canvas = canvas
     this.ctx = this.canvas.getContext('2d')
     this.pixelRatio = window.devicePixelRatio || 1
     this.canvas.width =
-      this.pixelRatio * parseInt(getComputedStyle(canvas).width)
+      this.pixelRatio * parseInt(getComputedStyle(this.canvas).width)
     this.canvas.height =
-      this.pixelRatio * parseInt(getComputedStyle(canvas).height)
-    this.oriWidth = canvas.width
-    this.oriHeight = canvas.height
+      this.pixelRatio * parseInt(getComputedStyle(this.canvas).height)
+    this.oriWidth = this.canvas.width
+    this.oriHeight = this.canvas.height
     this.colorsInfo = []
     this.processInfo = {
       colors: 0,
@@ -33,28 +31,48 @@ export default class ColorDust {
     this.averageColor = []
     this.clusterRes = []
     this.score = ''
-    this.K = 6
+    if (K) {
+      this.K = K
+    } else {
+      this.K = 6
+    }
   }
 
   readFile(url) {
-    const reader = new FileReader()
     // to base64
-    reader.readAsDataURL(url)
-    return new Promise((resolve) => {
-      reader.onload = async (e) => {
-        await this.drawToCanvas(e.target.result)
-        this.censusImage()
-        resolve()
-      }
-    })
+    if (url instanceof File) {
+      const reader = new FileReader()
+      reader.readAsDataURL(url)
+      return new Promise((resolve) => {
+        reader.onload = async (e) => {
+          await this.drawToCanvas(e.target.result)
+          this.censusImage()
+          resolve()
+        }
+      })
+    } else {
+      const xhr = new XMLHttpRequest()
+      return new Promise((resolve) => {
+        xhr.onload = async (e) => {
+          url = URL.createObjectURL(e.target.response)
+          await this.drawToCanvas(url)
+          this.censusImage()
+          resolve()
+        }
+        xhr.open('GET', url, true)
+        xhr.responseType = 'blob'
+        xhr.send()
+      })
+    }
   }
 
-  drawToCanvas(imgData) {
+  drawToCanvas(src) {
     const pixelRatio = this.pixelRatio
     const canvas = this.canvas
     const ctx = this.ctx
     const img = new Image()
-    img.src = imgData
+    img.src = src
+    img.crossOrigin = 'anonymous'
     return new Promise((resolve) => {
       img.onload = () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height)

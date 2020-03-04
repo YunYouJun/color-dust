@@ -11,13 +11,6 @@ Image theme color extraction.
 
 Demo: <https://yunyoujun.cn/color-dust/>
 
-## Color
-
-- [ ] primary
-- [ ] accent
-- [ ] secondary
-- [ ] info
-
 ## Ref
 
 - [图像颜色提取](https://codepen.io/zhaojun/post/cc)
@@ -27,6 +20,7 @@ Demo: <https://yunyoujun.cn/color-dust/>
 
 - [ ] update [brain]
 - [ ] [TensorFlow.js](https://tensorflow.google.cn/js/)
+- [ ] judge color Light and dark
 
 ## Thanks
 

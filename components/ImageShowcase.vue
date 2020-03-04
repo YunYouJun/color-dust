@@ -59,12 +59,6 @@ export default {
   mounted() {
     const canvas = this.$refs.canvasShowcase
     this.colorDust = new ColorDust(canvas)
-    this.ctx = canvas.getContext('2d')
-    this.pixelRatio = window.devicePixelRatio || 1
-    canvas.width = this.pixelRatio * parseInt(getComputedStyle(canvas).width)
-    canvas.height = this.pixelRatio * parseInt(getComputedStyle(canvas).height)
-    this.oriWidth = canvas.width
-    this.oriHeight = canvas.height
   },
   methods: {
     censusImage() {
@@ -97,7 +91,7 @@ export default {
         mainColor[2].g +
         ',' +
         mainColor[2].b +
-        ',0.8)'
+        ',1)'
       this.$store.commit('setColorsInfo', colorsInfo)
       this.$store.commit('setClusterColors', this.colorDust.clusterColors)
       this.$store.commit('setMainColor', mainColor)

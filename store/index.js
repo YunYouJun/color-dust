@@ -16,8 +16,8 @@ export const state = () => ({
     top5Count: 0,
     showQr: false
   },
-  mainColor: '',
-  averageColor: ''
+  mainColor: [],
+  averageColor: []
 })
 
 export const mutations = {

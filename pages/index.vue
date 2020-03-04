@@ -54,7 +54,7 @@ export default {
   },
   methods: {
     colorToProps(color) {
-      if (!color) {
+      if (!color || color.length === 0) {
         return {}
       }
       let _props = {}
@@ -88,6 +88,11 @@ export default {
         colorEnd: cEnd
       }
       return _props
+    }
+  },
+  head() {
+    return {
+      title: 'Welcome'
     }
   }
 }
