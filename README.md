@@ -22,6 +22,12 @@ Demo: <https://yunyoujun.cn/color-dust/>
 - [ ] [TensorFlow.js](https://tensorflow.google.cn/js/)
 - [ ] judge color Light and dark
 
+## Solution
+
+Use `ajax` to solve canvas cors.
+
+> I don't know why set `crossOrigin='anonymouse'` is invalid.
+
 ## Thanks
 
 - [colorful-color](https://github.com/woshizja/colorful-color)
