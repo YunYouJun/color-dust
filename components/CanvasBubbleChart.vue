@@ -19,12 +19,6 @@
         </v-card-actions>
       </v-card>
     </v-alert>
-
-    <v-snackbar v-model="snackbar" color="success" :timeout="1000" top>
-      <div class="text-center" style="width: 100%;">
-        Copy Color {{ selectColor }} successfully!
-      </div>
-    </v-snackbar>
   </div>
 </template>
 
@@ -51,7 +45,6 @@ export default {
     return {
       selectColor: '#',
       bubbles: [],
-      snackbar: false,
     }
   },
   watch: {
@@ -89,8 +82,9 @@ export default {
       if (this.$refs.selectColor) {
         const hex = this.$refs.selectColor.textContent
         navigator.clipboard.writeText(hex.toUpperCase())
-        this.snackbar = true
-        this.curColor = hex.toUpperCase()
+        this.$toast.success(
+          `Copy &nbsp;<strong style="color:${this.selectColor};">${this.selectColor}</strong>&nbsp; successfully!`
+        )
       }
     },
     initBubbles(bubbles) {
@@ -156,7 +150,7 @@ export default {
       }
       if (clickInCircle) {
         if (color) {
-          this.selectColor = color
+          this.selectColor = color.toUpperCase()
         } else {
           this.selectColor = '#'
         }

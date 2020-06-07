@@ -11,25 +11,16 @@ Image theme color extraction.
 
 Demo: <https://yunyoujun.cn/color-dust/>
 
-## Ref
-
-- [图像颜色提取](https://codepen.io/zhaojun/post/cc)
-- [colorful-color](https://github.com/woshizja/colorful-color)
-
 ## Todo
 
-- [ ] update [brain]
 - [ ] [TensorFlow.js](https://tensorflow.google.cn/js/)
 - [ ] judge color Light and dark
 
-## Solution
+## Ref
 
-Use `ajax` to solve canvas cors.
-
-> I don't know why set `crossOrigin='anonymouse'` is invalid.
+- [图像颜色提取](https://codepen.io/zhaojun/post/cc)
 
 ## Thanks
 
 - [colorful-color](https://github.com/woshizja/colorful-color)
-- [Vue.js](https://vuejs.org/) & [](https://nuxtjs.org/)
-- [BrainJS](https://github.com/BrainJS/brain.js)
+- [Vue.js](https://vuejs.org/) & [Nuxt.js](https://nuxtjs.org/)

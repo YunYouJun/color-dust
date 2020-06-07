@@ -33,12 +33,6 @@
         @click:clear="handleClearClick"
       ></v-file-input>
     </v-alert>
-    <v-snackbar v-model="snackbar">
-      {{ message }}
-      <v-btn text @click="snackbar = false">
-        Close
-      </v-btn>
-    </v-snackbar>
   </div>
 </template>
 
@@ -52,7 +46,6 @@ export default {
       bgColor: '',
       file: null,
       K: 6,
-      snackbar: false,
       message: '',
     }
   },
@@ -76,7 +69,7 @@ export default {
       if (!this.file) return
       this.message = await this.colorDust.readFile(this.file)
       if (this.message) {
-        this.snackbar = true
+        this.$toast.info(this.message)
       }
       const colorsInfo = this.colorDust.colorsInfo
       const mainColor = this.colorDust.mainColor

@@ -16,11 +16,6 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-snackbar v-model="snackbar" color="success" :timeout="1000">
-      <div class="text-center" style="width: 100%;">
-        Copy Hex Color {{ curColor }} successfully!
-      </div>
-    </v-snackbar>
   </v-alert>
 </template>
 
@@ -36,7 +31,6 @@ export default {
   },
   data() {
     return {
-      snackbar: false,
       curColor: '',
     }
   },
@@ -46,8 +40,10 @@ export default {
         ? e.target.querySelector('.color-text').textContent
         : e.target.textContent
       navigator.clipboard.writeText(hex.toUpperCase())
-      this.snackbar = true
       this.curColor = hex.toUpperCase()
+      this.$toast.success(
+        `Copy &nbsp;<strong style="color:${this.curColor}">${this.curColor}</strong>&nbsp; successfully!`
+      )
     },
   },
 }
