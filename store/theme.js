@@ -1,7 +1,7 @@
 export const state = () => ({
   isExchanged: false,
   primaryColor: '',
-  accentColor: ''
+  accentColor: '',
 })
 
 export const mutations = {
@@ -13,7 +13,7 @@ export const mutations = {
   },
   exchange(state) {
     state.isExchanged = !state.isExchanged
-  }
+  },
 }
 
 export const getters = {
@@ -30,5 +30,5 @@ export const getters = {
     } else {
       return state.primaryColor
     }
-  }
+  },
 }

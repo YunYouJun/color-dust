@@ -21,12 +21,12 @@
 import ColorLogo from '~/components/ColorLogo.vue'
 export default {
   components: {
-    ColorLogo
+    ColorLogo,
   },
   head() {
     return {
-      title: 'About'
+      title: 'About',
     }
-  }
+  },
 }
 </script>

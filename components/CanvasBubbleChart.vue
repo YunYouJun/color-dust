@@ -4,22 +4,24 @@
       <h2 class="headline font-weight-light ml-2">
         More Colors In Bubble Chart
       </h2>
+      <v-divider class="my-2"></v-divider>
+      <v-card class="text-center" :elevation="0">
+        <canvas
+          id="bubble-chart"
+          ref="bubbleChart"
+          @click="handleCanvasClick"
+        ></canvas>
+        <v-card-actions class="justify-center">
+          <v-chip color="success" class="text-uppercase" @click="copyColorHex">
+            <v-icon left>colorize</v-icon>
+            <span ref="selectColor">{{ selectColor }}</span>
+          </v-chip>
+        </v-card-actions>
+      </v-card>
     </v-alert>
-    <v-card class="text-center">
-      <canvas
-        id="bubble-chart"
-        ref="bubbleChart"
-        @click="handleCanvasClick"
-      ></canvas>
-      <v-card-actions class="justify-center">
-        <v-chip color="success" class="text-uppercase" @click="copyColorHex">
-          <v-icon left>colorize</v-icon>
-          <span ref="selectColor">{{ selectColor }}</span>
-        </v-chip>
-      </v-card-actions>
-    </v-card>
+
     <v-snackbar v-model="snackbar" color="success" :timeout="1000" top>
-      <div class="text-center" style="width:100%">
+      <div class="text-center" style="width: 100%;">
         Copy Color {{ selectColor }} successfully!
       </div>
     </v-snackbar>
@@ -42,14 +44,14 @@ export default {
       type: Array,
       default() {
         return []
-      }
-    }
+      },
+    },
   },
   data() {
     return {
       selectColor: '#',
       bubbles: [],
-      snackbar: false
+      snackbar: false,
     }
   },
   watch: {
@@ -61,7 +63,7 @@ export default {
         const canvas = this.$refs.bubbleChart
         this.ctx.clearRect(0, 0, canvas.width, canvas.height)
       }
-    }
+    },
   },
   mounted() {
     const canvas = this.$refs.bubbleChart
@@ -123,7 +125,7 @@ export default {
           color: ele.color,
           radius: r,
           x: centerX,
-          y: centerY
+          y: centerY,
         }
       })
 
@@ -176,7 +178,7 @@ export default {
         color = colors[i]
         dataset.push({
           weight: color.fre,
-          color: rgbToHex(hslToRgb(color.h, color.s, color.l))
+          color: rgbToHex(hslToRgb(color.h, color.s, color.l)),
         })
         i += cStep
       }
@@ -326,7 +328,7 @@ export default {
       const bbox = canvas.getBoundingClientRect()
       return {
         x: x - bbox.left,
-        y: y - bbox.top
+        y: y - bbox.top,
       }
     },
 
@@ -343,11 +345,11 @@ export default {
             ',' +
             Math.floor(Math.random() * 255) +
             ')',
-          opacity: Math.random()
+          opacity: Math.random(),
         })
       }
       return dataset
-    }
-  }
+    },
+  },
 }
 </script>

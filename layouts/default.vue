@@ -56,25 +56,25 @@ export default {
         {
           icon: 'home',
           title: 'Welcome',
-          to: '/'
+          to: '/',
         },
         {
           icon: 'photo_library',
           title: 'Album',
-          to: '/album'
+          to: '/album',
         },
         {
           icon: 'info',
           title: 'About',
-          to: '/about'
-        }
+          to: '/about',
+        },
       ],
-      title: 'Color Dust'
+      title: 'Color Dust',
     }
   },
   computed: {
-    ...mapGetters('theme', ['getBgColor', 'getFgColor'])
-  }
+    ...mapGetters('theme', ['getBgColor', 'getFgColor']),
+  },
 }
 </script>
 

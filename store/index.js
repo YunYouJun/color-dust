@@ -5,7 +5,7 @@ export const state = () => ({
     ['rgb(222,244,255)', 'rgb(183,189,255)'],
     ['rgba(27,72,177,0.3)', 'rgba(27,72,177,0.7)'],
     ['rgba(74,192,223,0.3)', 'rgba(74,192,223,0.7)'],
-    ['rgba(140,114,192,0.3)', 'rgba(140,114,192,0.7)']
+    ['rgba(140,114,192,0.3)', 'rgba(140,114,192,0.7)'],
   ],
   score: '',
   processInfo: {
@@ -14,10 +14,10 @@ export const state = () => ({
     kmeansIteration: 0,
     kmeansTime: 0,
     top5Count: 0,
-    showQr: false
+    showQr: false,
   },
   mainColor: [],
-  averageColor: []
+  averageColor: [],
 })
 
 export const mutations = {
@@ -41,7 +41,7 @@ export const mutations = {
   },
   setColorsInfo(state, colorsInfo) {
     state.colorsInfo = colorsInfo
-  }
+  },
 }
 
 export const actions = {
@@ -51,7 +51,7 @@ export const actions = {
       ['rgb(222,244,255)', 'rgb(183,189,255)'],
       ['rgba(27,72,177,0.3)', 'rgba(27,72,177,0.7)'],
       ['rgba(74,192,223,0.3)', 'rgba(74,192,223,0.7)'],
-      ['rgba(140,114,192,0.3)', 'rgba(140,114,192,0.7)']
+      ['rgba(140,114,192,0.3)', 'rgba(140,114,192,0.7)'],
     ])
     commit('setScore', '')
     commit('setProcessInfo', {
@@ -60,12 +60,12 @@ export const actions = {
       kmeansIteration: 0,
       kmeansTime: 0,
       top5Count: 0,
-      showQr: false
+      showQr: false,
     })
     commit('setMainColor', '')
     commit('setAverageColor', '')
     // theme
     commit('theme/setPrimaryColor', '')
     commit('theme/setAccentColor', '')
-  }
+  },
 }

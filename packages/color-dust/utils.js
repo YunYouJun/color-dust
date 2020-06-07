@@ -39,7 +39,7 @@ function hslToRgb(h, s, l) {
   if (s === 0) {
     r = g = b = l // achromatic
   } else {
-    const hue2rgb = function(p, q, t) {
+    const hue2rgb = function (p, q, t) {
       if (t < 0) t += 1
       if (t > 1) t -= 1
       if (t < 1 / 6) return p + (q - p) * 6 * t

@@ -1,14 +1,6 @@
-import brain from 'brain'
 import { rgbToHsl, hslToRgb, rgbToHex } from './utils'
-// train net
-import { network1, network2 } from './trainData'
 export default class ColorDust {
   constructor(canvas, K) {
-    // data
-    this.net = new brain.NeuralNetwork()
-    this.net2 = new brain.NeuralNetwork()
-    this.net.fromJSON(network1)
-    this.net2.fromJSON(network2)
     // canvas
     this.canvas = canvas
     this.ctx = this.canvas.getContext('2d')
@@ -25,7 +17,7 @@ export default class ColorDust {
       censusTime: 0,
       kmeansIteration: 0,
       kmeansTime: 0,
-      top5Count: 0
+      top5Count: 0,
     }
     this.mainColor = []
     this.averageColor = []
@@ -149,7 +141,6 @@ export default class ColorDust {
     let hKey, sKey, lKey, r, g, b
     let pixelCount = 0
     const pixelStep = imageData.height * imageData.width < 600 * 600 ? 1 : 2
-    // console.log('pixel step', pixelStep)
     let colorStep = Math.round(
       0.1066 * this.K * this.K - 2.7463 * this.K + 17.2795
     )
@@ -160,13 +151,14 @@ export default class ColorDust {
       censusTime: 0,
       kmeansIteration: 0,
       kmeansTime: 0,
-      top5Count: 0
+      top5Count: 0,
     }
     processInfo.colorStep = colorStep
 
     // for bubble
     let colorsInfo = []
     let hsl, key
+    // get color
     for (let row = 1; row < imageData.height - 1; ) {
       for (let col = 1; col < imageData.width - 1; ) {
         r = imageData.data[row * imageData.width * 4 + col * 4]
@@ -182,6 +174,7 @@ export default class ColorDust {
           continue // too dark
         }
         pixelCount++
+        // key (h, s, l) => (100, 100, 100)
         hKey = Math.floor(hsl[0] / 10) * 10000
         sKey = Math.floor(hsl[1] / 5) * 100
         lKey = Math.floor(hsl[2] / 5)
@@ -199,9 +192,10 @@ export default class ColorDust {
             h: hsl[0],
             s: hsl[1],
             l: hsl[2],
-            category: -1
+            category: -1,
           })
         } else {
+          // frequence
           colorsInfo[index].fre++
         }
         col += pixelStep
@@ -214,7 +208,7 @@ export default class ColorDust {
 
     beginTime = new Date().getTime()
     // sort and filter rgbCensus
-    colorsInfo.sort(function(pre, next) {
+    colorsInfo.sort(function (pre, next) {
       return next.fre - pre.fre
     })
     let len = colorsInfo.length
@@ -253,12 +247,12 @@ export default class ColorDust {
     this.averageColor = {
       h: averageColor[0],
       s: averageColor[1],
-      l: averageColor[2]
+      l: averageColor[2],
     }
 
     processInfo.kmeansTime = +new Date() - beginTime
     processInfo.kmeansIteration = this.clusterRes[1]
-    this.info = this.imageScore(colorsInfo)
+    this.info = this.countColor(colorsInfo)
     processInfo.top5Count = this.info.top5Count * 100
     this.colorsInfo = colorsInfo
     this.processInfo = processInfo
@@ -277,7 +271,7 @@ export default class ColorDust {
           s: color.s,
           l: color.l,
           category: color.category,
-          fre: color.fre
+          fre: color.fre,
         })
         continue
       }
@@ -297,7 +291,7 @@ export default class ColorDust {
           s: color.s,
           l: color.l,
           category: color.category,
-          fre: color.fre
+          fre: color.fre,
         })
       }
       if (initSeed.length >= num) {
@@ -373,7 +367,7 @@ export default class ColorDust {
           s: ele.s,
           l: ele.l,
           category: index,
-          fre: ele.freCount
+          fre: ele.freCount,
         }
       })
       if (flag) {
@@ -381,7 +375,7 @@ export default class ColorDust {
       }
     }
     // console.log('KMC iteration ' + iterationCount)
-    seeds.sort(function(pre, next) {
+    seeds.sort(function (pre, next) {
       let preRgb = hslToRgb(pre.h, pre.s, pre.l)
       preRgb = preRgb[0] + preRgb[1] + preRgb[2]
       // let next_h = next.h;
@@ -410,39 +404,18 @@ export default class ColorDust {
     color.category = minIndex
   }
 
-  imageScore(colorInfo) {
+  countColor(colorInfo) {
     const info = {
-      colorCount: Math.log10(colorInfo.length),
-      average: 0,
-      variance: 0,
       top50Count: 0,
-      top50Average: 0,
-      top50Variance: 0,
       top20Count: 0,
-      top20Average: 0,
-      top20Variance: 0,
       top10Count: 0,
-      top10Average: 0,
-      top10Variance: 0,
       top5Count: 0,
-      top5Average: 0,
-      top5Variance: 0
     }
-    let average = 0
-    let variance = 0
     let count = 0
     let top50Count = 0
-    let top50Average = 0
-    let top50Variance = 0
     let top20Count = 0
-    let top20Average = 0
-    let top20Variance = 0
     let top10Count = 0
-    let top10Average = 0
-    let top10Variance = 0
     let top5Count = 0
-    let top5Average = 0
-    let top5Variance = 0
     let len = colorInfo.length
     let color
     while (len--) {
@@ -462,78 +435,10 @@ export default class ColorDust {
       }
     }
     len = colorInfo.length
-    info.average = Math.log10(count / len)
-    info.top50Average = Math.log10(top50Count / 50)
     info.top50Count = top50Count / count
-    info.top20Average = Math.log10(top20Count / 20)
     info.top20Count = top20Count / count
-    info.top10Average = Math.log10(top10Count / 10)
     info.top10Count = top10Count / count
-    info.top5Average = Math.log10(top5Count / 5)
     info.top5Count = top5Count / count
-    average = count / len
-    top50Average = top50Count / 50
-    top20Average = top20Count / 50
-    top10Average = top10Count / 50
-    top5Average = top5Count / 50
-    while (len--) {
-      color = colorInfo[len]
-      variance += (color.fre - average) * (color.fre - average)
-      if (len < 50) {
-        top50Variance += (color.fre - top50Average) * (color.fre - top50Average)
-        if (len < 20) {
-          top20Variance +=
-            (color.fre - top20Average) * (color.fre - top20Average)
-          if (len < 10) {
-            top10Variance +=
-              (color.fre - top10Average) * (color.fre - top10Average)
-            if (len < 5) {
-              top5Variance +=
-                (color.fre - top5Average) * (color.fre - top5Average)
-            }
-          }
-        }
-      }
-    }
-    len = colorInfo.length
-    variance = Math.sqrt(variance / len)
-    top50Variance = Math.sqrt(top50Variance / 50)
-    top20Variance = Math.sqrt(top20Variance / 50)
-    top10Variance = Math.sqrt(top10Variance / 50)
-    top5Variance = Math.sqrt(top5Variance / 50)
-    info.variance = Math.log10(variance)
-    info.top50Variance = Math.log10(top50Variance)
-    info.top20Variance = Math.log10(top20Variance)
-    info.top10Variance = Math.log10(top10Variance)
-    info.top5Variance = Math.log10(top5Variance)
-    // normalization
-    let max = -1
-    for (const key in info) {
-      if (info[key] > max) {
-        max = info[key]
-      }
-    }
-    for (const key in info) {
-      if (info[key] > 1) {
-        info[key] = info[key] / max
-      }
-    }
-    const t = this.net.run(info)
-    const t2 = this.net2.run(info)
-    const resCount = t.first + t.second + t.third + t.fourth
-    const score =
-      (100 * t.first) / resCount +
-      (85 * t.second) / resCount +
-      (75 * t.third) / resCount +
-      (65 * t.fourth) / resCount
-    const resCount2 = t2.first + t2.second + t2.third + t2.fourth
-    const score2 =
-      (100 * t2.first) / resCount2 +
-      (85 * t2.second) / resCount2 +
-      (75 * t2.third) / resCount2 +
-      (65 * t2.fourth) / resCount2
-    const scoreFinal = score * 0.2 + score2 * 0.8
-    this.score = scoreFinal
     return info
   }
 

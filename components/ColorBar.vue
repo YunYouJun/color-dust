@@ -32,7 +32,7 @@ export default {
     label: { type: String, default: 'Color' },
     colorStart: { type: String, default: '#999999' },
     colorMiddle: { type: String, default: '#666666' },
-    colorEnd: { type: String, default: '#333333' }
+    colorEnd: { type: String, default: '#333333' },
   },
   computed: {
     gradient() {
@@ -44,10 +44,10 @@ export default {
           this.colorMiddle +
           ',' +
           this.colorEnd +
-          ')'
+          ')',
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

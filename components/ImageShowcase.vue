@@ -53,7 +53,7 @@ export default {
       file: null,
       K: 6,
       snackbar: false,
-      message: ''
+      message: '',
     }
   },
   mounted() {
@@ -136,24 +136,24 @@ export default {
       const loopColors = [
         [
           'rgb(' + mcR + ',' + mcG + ',' + mcB + ')',
-          'rgb(' + mcR2 + ',' + mcG2 + ',' + mcB2 + ')'
+          'rgb(' + mcR2 + ',' + mcG2 + ',' + mcB2 + ')',
         ],
         [
           'rgba(' + bc1[0] + ',' + bc1[1] + ',' + bc1[2] + ',0.4)',
-          'rgba(' + bc1[0] + ',' + bc1[1] + ',' + bc1[2] + ',0.7)'
+          'rgba(' + bc1[0] + ',' + bc1[1] + ',' + bc1[2] + ',0.7)',
         ],
         [
           'rgba(' + bc2[0] + ',' + bc2[1] + ',' + bc2[2] + ',0.4)',
-          'rgba(' + bc2[0] + ',' + bc2[1] + ',' + bc2[2] + ',0.7)'
+          'rgba(' + bc2[0] + ',' + bc2[1] + ',' + bc2[2] + ',0.7)',
         ],
         [
           'rgba(' + bc3[0] + ',' + bc3[1] + ',' + bc3[2] + ',0.4)',
-          'rgba(' + bc3[0] + ',' + bc3[1] + ',' + bc3[2] + ',0.7)'
-        ]
+          'rgba(' + bc3[0] + ',' + bc3[1] + ',' + bc3[2] + ',0.7)',
+        ],
       ]
       this.$store.commit('setLoopColors', loopColors)
-    }
-  }
+    },
+  },
 }
 </script>
 

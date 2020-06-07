@@ -72,12 +72,12 @@ export default {
         ',1)'
       this.$store.commit('theme/setPrimaryColor', primaryColor)
       this.$store.commit('theme/setAccentColor', accentColor)
-    }
+    },
   },
   head() {
     return {
-      title: 'Image Test'
+      title: 'Image Test',
     }
-  }
+  },
 }
 </script>

@@ -17,7 +17,7 @@
       </v-col>
     </v-row>
     <v-snackbar v-model="snackbar" color="success" :timeout="1000">
-      <div class="text-center" style="width:100%">
+      <div class="text-center" style="width: 100%;">
         Copy Hex Color {{ curColor }} successfully!
       </div>
     </v-snackbar>
@@ -31,13 +31,13 @@ export default {
       type: Array,
       default() {
         return []
-      }
-    }
+      },
+    },
   },
   data() {
     return {
       snackbar: false,
-      curColor: ''
+      curColor: '',
     }
   },
   methods: {
@@ -48,8 +48,8 @@ export default {
       navigator.clipboard.writeText(hex.toUpperCase())
       this.snackbar = true
       this.curColor = hex.toUpperCase()
-    }
-  }
+    },
+  },
 }
 </script>
 

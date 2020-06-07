@@ -4,18 +4,15 @@
       <image-showcase></image-showcase>
     </v-col>
     <v-col cols="12">
-      <score-layer></score-layer>
+      <color-card :colors="$store.state.clusterColors"></color-card>
     </v-col>
     <v-col cols="12">
       <color-bar label="main color" v-bind="mcProps"></color-bar>
     </v-col>
-    <v-col cols="12" class="mt-2">
+    <v-col cols="12">
       <color-bar label="average color" v-bind="acProps"></color-bar>
     </v-col>
     <v-col cols="12">
-      <color-card :colors="$store.state.clusterColors"></color-card>
-    </v-col>
-    <v-col cols="12" class="mt-5">
       <image-info></image-info>
     </v-col>
     <v-col cols="12">
@@ -30,7 +27,6 @@
 import { hslToRgb, rgbToHex } from '~/packages/color-dust/utils'
 // components
 import ImageShowcase from '~/components/ImageShowcase'
-import ScoreLayer from '~/components/ScoreLayer'
 import ColorBar from '~/components/ColorBar'
 import ImageInfo from '~/components/ImageInfo'
 import ColorCard from '~/components/ColorCard'
@@ -38,11 +34,10 @@ import CanvasBubbleChart from '~/components/CanvasBubbleChart'
 export default {
   components: {
     ImageShowcase,
-    ScoreLayer,
     ColorBar,
     ImageInfo,
     ColorCard,
-    CanvasBubbleChart
+    CanvasBubbleChart,
   },
   computed: {
     mcProps() {
@@ -50,7 +45,7 @@ export default {
     },
     acProps() {
       return this.colorToProps(this.$store.state.averageColor)
-    }
+    },
   },
   methods: {
     colorToProps(color) {
@@ -85,15 +80,15 @@ export default {
       _props = {
         colorStart: cStart,
         colorMiddle: cMiddle,
-        colorEnd: cEnd
+        colorEnd: cEnd,
       }
       return _props
-    }
+    },
   },
   head() {
     return {
-      title: 'Welcome'
+      title: 'Welcome',
     }
-  }
+  },
 }
 </script>
