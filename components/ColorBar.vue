@@ -4,49 +4,52 @@
       <h3 class="title">
         <span class="label text-capitalize">{{ label }}</span>
         <span class="value font-weight-light text-uppercase ml-2">
-          <span>
-            <i class="color-box" :style="{ backgroundColor: colorStart }"></i>
-            <span>{{ colorStart }}</span>
-          </span>
-          <span :style="{ color: colorMiddle }"
-            ><i class="color-box" :style="{ backgroundColor: colorMiddle }"></i
-            ><span>{{ colorMiddle }}</span>
-          </span>
-          <span :style="{ color: colorEnd }">
-            <i class="color-box" :style="{ backgroundColor: colorEnd }"></i>
-            <span>{{ colorEnd }}</span>
+          <span v-for="(color, i) in colors" :key="i" :style="{ color }">
+            <i class="color-box" :style="{ backgroundColor: color }"></i>
+            <span>{{ color }}</span>
           </span>
         </span>
         <v-divider class="mb-2"></v-divider>
       </h3>
       <div class="color-wrap">
-        <v-card height="80" :style="gradient" ripple></v-card>
+        <v-card height="80" :style="background" ripple></v-card>
       </div>
     </v-alert>
   </div>
 </template>
 
 <script>
+import { rgbToHex } from '~/packages/color-dust/utils'
 export default {
   props: {
     label: { type: String, default: 'Color' },
-    colorStart: { type: String, default: '#999999' },
-    colorMiddle: { type: String, default: '#666666' },
-    colorEnd: { type: String, default: '#333333' },
+    colors: {
+      type: Array,
+      default() {
+        return []
+      },
+    },
   },
   computed: {
-    gradient() {
-      return {
-        background:
-          'linear-gradient(to right,' +
-          this.colorStart +
-          ',' +
-          this.colorMiddle +
-          ',' +
-          this.colorEnd +
-          ')',
+    background() {
+      if (this.colors.length > 1) {
+        let linearGradient = 'linear-gradient(to right'
+        this.colors.forEach((color) => {
+          linearGradient += ',' + color
+        })
+        linearGradient += ')'
+        return {
+          background: linearGradient,
+        }
+      } else {
+        return {
+          background: this.colors[0],
+        }
       }
     },
+  },
+  methods: {
+    rgbToHex,
   },
 }
 </script>

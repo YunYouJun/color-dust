@@ -13,7 +13,7 @@
         ></canvas>
         <v-card-actions class="justify-center">
           <v-chip color="success" class="text-uppercase" @click="copyColorHex">
-            <v-icon left>colorize</v-icon>
+            <v-icon left>$vuetify.icons.mdiEyedropper</v-icon>
             <span ref="selectColor">{{ selectColor }}</span>
           </v-chip>
         </v-card-actions>
@@ -328,9 +328,13 @@ export default {
 
     createDataset() {
       const dataset = []
-      for (let i = 0; i < 100; i++) {
+      dataset.push({
+        weight: 100,
+        color: '#666666',
+      })
+      for (let i = 0; i < 99; i++) {
         dataset.push({
-          weight: Math.floor(Math.random() * 100),
+          weight: Math.floor(Math.random() * 50),
           color:
             'rgb(' +
             Math.floor(Math.random() * 255) +

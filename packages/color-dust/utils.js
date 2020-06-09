@@ -58,11 +58,19 @@ function hslToRgb(h, s, l) {
 }
 
 function rgbToHex(rgb) {
+  if (!rgb) return
   let color = '#'
-  let tmp
-  for (let i = 0; i < rgb.length; i++) {
-    tmp = rgb[i].toString(16)
-    color += tmp.length < 2 ? '0' + tmp : tmp
+  let rgbArray = []
+  if (Array.isArray(rgb) && rgb.length === 3) {
+    rgbArray = rgb.slice()
+  } else if ('r' in rgb && 'g' in rgb && 'b' in rgb) {
+    rgbArray = [rgb.r, rgb.g, rgb.b]
+  } else {
+    return ''
+  }
+  for (let i = 0; i < rgbArray.length; i++) {
+    const hex = rgbArray[i].toString(16)
+    color += hex.length < 2 ? '0' + hex : hex
   }
   return color
 }

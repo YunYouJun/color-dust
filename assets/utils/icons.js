@@ -1,0 +1,15 @@
+export {
+  mdiHome,
+  mdiImageMultiple,
+  mdiInformation,
+  mdiInvertColors,
+  mdiToggleSwitch,
+  mdiToggleSwitchOff,
+  mdiPalette,
+  mdiImage,
+  mdiEyedropper,
+  mdiTools,
+  mdiGithub,
+  mdiCloud,
+  mdiEarth,
+} from '@mdi/js'

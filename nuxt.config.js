@@ -85,14 +85,8 @@ export default {
    */
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
-    defaultAssets: {
-      icons: 'md',
-    },
-    theme: {
-      options: {
-        customProperties: true,
-      },
-    },
+    defaultAssets: false,
+    optionsPath: '~/plugins/vuetify.options.js',
   },
   /*
    ** Build configuration

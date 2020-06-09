@@ -8,30 +8,50 @@
       <canvas ref="canvasShowcase" class="showcase"></canvas>
     </v-card>
     <v-alert border="left" class="mt-4">
-      <v-slider
-        v-model="K"
-        class="mt-5"
-        min="3"
-        max="20"
-        thumb-label="always"
-        prepend-icon="color_lens"
-        dense
-        hint="How many colors?"
-        @end="censusImage"
-      ></v-slider>
-      <v-file-input
-        v-model="file"
-        accept="image/*"
-        placeholder="Upload image to parse."
-        prepend-icon="photo"
-        small-chips
-        show-size
-        outlined
-        dense
-        hide-details
-        @change="startProcess"
-        @click:clear="handleClearClick"
-      ></v-file-input>
+      <v-row>
+        <v-col cols="12" md="6">
+          <v-file-input
+            v-model="file"
+            accept="image/*"
+            placeholder="Upload image to parse."
+            prepend-icon="$vuetify.icons.mdiImage"
+            small-chips
+            show-size
+            outlined
+            dense
+            hide-details
+            @change="startProcess"
+            @click:clear="handleClearClick"
+          ></v-file-input>
+        </v-col>
+        <v-col cols="6" md="6">
+          <v-text-field
+            dense
+            label="Blur"
+            type="number"
+            v-model="blur"
+            outlined
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" md="2">
+          <v-checkbox dense v-model="palette" label="Palette"></v-checkbox>
+        </v-col>
+        <v-col cols="12" md="10">
+          <v-slider
+            v-model="K"
+            class="mt-5"
+            min="3"
+            max="20"
+            thumb-label="always"
+            prepend-icon="$vuetify.icons.mdiPalette"
+            dense
+            hint="How many colors?"
+            @end="censusImage"
+          ></v-slider>
+        </v-col>
+      </v-row>
     </v-alert>
   </div>
 </template>
@@ -42,11 +62,13 @@ import { hslToRgb } from '~/packages/color-dust/utils'
 export default {
   data() {
     return {
+      palette: true,
       colorDust: {},
       bgColor: '',
       file: null,
       K: 6,
       message: '',
+      blur: 0,
     }
   },
   mounted() {
@@ -92,7 +114,7 @@ export default {
       this.$store.commit('setProcessInfo', this.colorDust.processInfo)
       this.updateLoopColors(
         this.colorDust.mainColor,
-        this.colorDust.clusterRes[0]
+        this.colorDust.clusterRes.seeds
       )
       // theme
       this.$store.commit('theme/setPrimaryColor', primaryColor)
@@ -100,7 +122,7 @@ export default {
       // draw
       this.colorDust.drawPalette()
     },
-    updateLoopColors(mainColor, clusterRes) {
+    updateLoopColors(mainColor, clusterColors) {
       const scale = 1.1
       const mcR =
         mainColor[0].r * scale < 255 ? Math.floor(mainColor[0].r * scale) : 255
@@ -114,17 +136,21 @@ export default {
         mcG * scale * scale < 255 ? Math.floor(mcG * scale * scale) : 255
       const mcB2 =
         mcB * scale * scale < 255 ? Math.floor(mcB * scale * scale) : 255
-      const step = Math.floor(clusterRes.length / 3)
-      const bc1 = hslToRgb(clusterRes[0].h, clusterRes[0].s, clusterRes[0].l)
+      const step = Math.floor(clusterColors.length / 3)
+      const bc1 = hslToRgb(
+        clusterColors[0].h,
+        clusterColors[0].s,
+        clusterColors[0].l
+      )
       const bc2 = hslToRgb(
-        clusterRes[step].h,
-        clusterRes[step].s,
-        clusterRes[step].l
+        clusterColors[step].h,
+        clusterColors[step].s,
+        clusterColors[step].l
       )
       const bc3 = hslToRgb(
-        clusterRes[step * 2].h,
-        clusterRes[step * 2].s,
-        clusterRes[step * 2].l
+        clusterColors[step * 2].h,
+        clusterColors[step * 2].s,
+        clusterColors[step * 2].l
       )
       const loopColors = [
         [

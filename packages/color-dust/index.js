@@ -21,7 +21,7 @@ export default class ColorDust {
     }
     this.mainColor = []
     this.averageColor = []
-    this.clusterRes = []
+    this.clusterRes = {}
     this.score = ''
     if (K) {
       this.K = K
@@ -218,11 +218,17 @@ export default class ColorDust {
       const flag = color.fre < 5 - pixelStep && len > 400
       return !flag
     })
-    this.mainColor = [colorsInfo[0], colorsInfo[1], colorsInfo[2]]
+    // top three color
+    this.mainColor = [
+      rgbToHex(colorsInfo[0]),
+      rgbToHex(colorsInfo[1]),
+      rgbToHex(colorsInfo[2]),
+    ]
     // k-mean clustering
     const initSeed1 = this.chooseSeedColors(colorsInfo, this.K)
     this.clusterRes = this.kMC(colorsInfo, initSeed1, 100)
-    this.clusterColors = this.clusterRes[0]
+
+    this.clusterColors = this.clusterRes.seeds
     this.clusterColors = this.clusterColors.map((color) => {
       return rgbToHex(hslToRgb(color.h, color.s, color.l))
     })
@@ -239,19 +245,14 @@ export default class ColorDust {
       fCount += colorsInfo[len].fre
     }
 
-    const averageColor = rgbToHsl(
-      Math.floor(rCount / fCount),
-      Math.floor(gCount / fCount),
-      Math.floor(bCount / fCount)
-    )
-    this.averageColor = {
-      h: averageColor[0],
-      s: averageColor[1],
-      l: averageColor[2],
-    }
+    this.averageColor = rgbToHex({
+      r: Math.floor(rCount / fCount),
+      g: Math.floor(gCount / fCount),
+      b: Math.floor(bCount / fCount),
+    })
 
     processInfo.kmeansTime = +new Date() - beginTime
-    processInfo.kmeansIteration = this.clusterRes[1]
+    processInfo.kmeansIteration = this.clusterRes.iteration
     this.info = this.countColor(colorsInfo)
     processInfo.top5Count = this.info.top5Count * 100
     this.colorsInfo = colorsInfo
@@ -302,9 +303,9 @@ export default class ColorDust {
   }
 
   kMC(colors, seeds, maxStep) {
-    let iterationCount = 0
+    let iteration = 0
 
-    while (iterationCount++ < maxStep) {
+    while (iteration++ < maxStep) {
       // filter seeds
       seeds = seeds.filter((seed) => {
         return seed
@@ -384,7 +385,10 @@ export default class ColorDust {
       nextRgb = nextRgb[0] + nextRgb[1] + nextRgb[2]
       return nextRgb - preRgb
     })
-    return [seeds, iterationCount]
+    return {
+      seeds,
+      iteration,
+    }
   }
 
   classifyColor(color, classes) {

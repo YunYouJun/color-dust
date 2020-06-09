@@ -1,38 +1,18 @@
 <template>
-  <v-app :style="{ backgroundColor: getBgColor, '--theme-color': getBgColor }">
-    <v-navigation-drawer
-      v-model="drawer"
-      clipped
-      app
-      mini-variant
-      :color="getFgColor"
-    >
-      <v-list>
-        <v-list-item
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-          exact
-        >
-          <v-list-item-action :title="item.title">
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
+  <v-app :style="{ backgroundColor: getBgColor }">
+    <nav-drawer :color="getFgColor"></nav-drawer>
     <v-app-bar app clipped-left fixed :color="getFgColor">
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title v-text="title" />
       <v-spacer />
       <v-btn icon @click.stop="$store.commit('theme/exchange')">
-        <v-icon>transform</v-icon>
+        <v-icon v-if="$store.state.theme.isExchanged"
+          >$vuetify.icons.mdiToggleSwitch</v-icon
+        >
+        <v-icon v-else>$vuetify.icons.mdiToggleSwitchOff</v-icon>
       </v-btn>
       <v-btn icon @click.stop="$vuetify.theme.dark = !$vuetify.theme.dark">
-        <v-icon>invert_colors</v-icon>
+        <v-icon>$vuetify.icons.mdiInvertColors</v-icon>
       </v-btn>
     </v-app-bar>
     <v-content>
@@ -40,49 +20,44 @@
         <nuxt />
       </v-container>
     </v-content>
-    <!-- <v-footer :fixed="fixed" app>
-      <span>&copy; {{ new Date().getFullYear() }}</span>
-    </v-footer> -->
+    <base-footer></base-footer>
   </v-app>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import NavDrawer from '~/components/layout/NavDrawer'
+import BaseFooter from '~/components/layout/BaseFooter'
 export default {
+  components: {
+    NavDrawer,
+    BaseFooter,
+  },
   data() {
     return {
-      drawer: false,
-      items: [
-        {
-          icon: 'home',
-          title: 'Welcome',
-          to: '/',
-        },
-        {
-          icon: 'photo_library',
-          title: 'Album',
-          to: '/album',
-        },
-        {
-          icon: 'info',
-          title: 'About',
-          to: '/about',
-        },
-      ],
       title: 'Color Dust',
     }
   },
   computed: {
     ...mapGetters('theme', ['getBgColor', 'getFgColor']),
+    drawer: {
+      get() {
+        return this.$store.state.app.drawer
+      },
+      set(val) {
+        this.$store.commit('app/setDrawer', val)
+      },
+    },
+  },
+  watch: {
+    getFgColor(val) {
+      document.documentElement.style.setProperty('--theme-color', val)
+    },
   },
 }
 </script>
 
 <style lang="scss">
-:root {
-  --theme-color: #333;
-}
-
 ::-webkit-scrollbar {
   width: 0.8rem;
   background-color: transparent;
@@ -95,6 +70,6 @@ export default {
 
 ::-webkit-scrollbar-thumb {
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
-  background-color: var(--theme-color);
+  background-color: var(--theme-color, gray);
 }
 </style>
