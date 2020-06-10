@@ -109,7 +109,7 @@ export default {
       })
     },
     blur() {
-      console.log('blur')
+      // console.log('blur')
     },
     handleClearClick() {
       this.colorDust.clearCanvas()

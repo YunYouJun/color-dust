@@ -47,6 +47,7 @@
 <script>
 // :src="`https://picsum.photos/200?random=${n}`"
 import ColorDust from '~/packages/color-dust'
+import { isDark } from '~/packages/color-dust/utils'
 export default {
   mounted() {
     this.colorDust = new ColorDust(this.$refs.albumDemo)
@@ -57,19 +58,12 @@ export default {
       if (!img) return
       const url = img.slice(5, -2)
       await this.colorDust.readFile(url)
-      const colorsInfo = this.colorDust.colorsInfo
       const mainColor = this.colorDust.mainColor
-      const mainColorRGB =
-        colorsInfo[0].r + ',' + colorsInfo[0].g + ',' + colorsInfo[0].b
-      const primaryColor = 'rgba(' + mainColorRGB + ',0.8)'
-      const accentColor =
-        'rgba(' +
-        mainColor[2].r +
-        ',' +
-        mainColor[2].g +
-        ',' +
-        mainColor[2].b +
-        ',1)'
+
+      const primaryColor = this.colorDust.averageColor
+      const accentColor = mainColor[0]
+      this.$vuetify.theme.dark = isDark(accentColor)
+
       this.$store.commit('theme/setPrimaryColor', primaryColor)
       this.$store.commit('theme/setAccentColor', accentColor)
     },

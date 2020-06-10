@@ -1,6 +1,12 @@
 <template>
   <v-footer padless>
-    <v-card flat tile class="text-center" width="100%">
+    <v-card
+      flat
+      tile
+      :color="this.$store.state.theme.accentColor"
+      class="text-center"
+      width="100%"
+    >
       <v-card-text>
         <v-btn
           v-for="(item, i) in items"

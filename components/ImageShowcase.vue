@@ -4,6 +4,7 @@
       class="showcase-wrap"
       :class="{ censused: bgColor }"
       :style="{ backgroundColor: bgColor }"
+      :elevation="0"
     >
       <canvas ref="canvasShowcase" class="showcase"></canvas>
     </v-card>
@@ -26,17 +27,17 @@
         </v-col>
         <v-col cols="6" md="6">
           <v-text-field
-            dense
+            v-model="blur"
             label="Blur"
             type="number"
-            v-model="blur"
             outlined
+            dense
           ></v-text-field>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="12" md="2">
-          <v-checkbox dense v-model="palette" label="Palette"></v-checkbox>
+          <v-checkbox v-model="palette" dense label="Palette"></v-checkbox>
         </v-col>
         <v-col cols="12" md="10">
           <v-slider
@@ -58,18 +59,23 @@
 
 <script>
 import ColorDust from '~/packages/color-dust'
-import { hslToRgb } from '~/packages/color-dust/utils'
+import { isDark } from '~/packages/color-dust/utils'
 export default {
   data() {
     return {
       palette: true,
       colorDust: {},
-      bgColor: '',
+      // bgColor: '',
       file: null,
       K: 6,
       message: '',
       blur: 0,
     }
+  },
+  computed: {
+    bgColor() {
+      return this.$store.state.theme.primaryColor
+    },
   },
   mounted() {
     const canvas = this.$refs.canvasShowcase
@@ -95,82 +101,23 @@ export default {
       }
       const colorsInfo = this.colorDust.colorsInfo
       const mainColor = this.colorDust.mainColor
-      const mainColorRGB =
-        colorsInfo[0].r + ',' + colorsInfo[0].g + ',' + colorsInfo[0].b
-      this.bgColor = 'rgba(' + mainColorRGB + ',0.3)'
-      const primaryColor = 'rgba(' + mainColorRGB + ',0.8)'
-      const accentColor =
-        'rgba(' +
-        mainColor[2].r +
-        ',' +
-        mainColor[2].g +
-        ',' +
-        mainColor[2].b +
-        ',1)'
+      // const mainColorRGB =
+      //   colorsInfo[0].r + ',' + colorsInfo[0].g + ',' + colorsInfo[0].b
+      // const primaryColor = 'rgba(' + mainColorRGB + ',0.8)'
+      const primaryColor = this.colorDust.averageColor
+      const accentColor = mainColor[0]
+      this.$vuetify.theme.dark = isDark(accentColor)
+
       this.$store.commit('setColorsInfo', colorsInfo)
       this.$store.commit('setClusterColors', this.colorDust.clusterColors)
       this.$store.commit('setMainColor', mainColor)
       this.$store.commit('setAverageColor', this.colorDust.averageColor)
       this.$store.commit('setProcessInfo', this.colorDust.processInfo)
-      this.updateLoopColors(
-        this.colorDust.mainColor,
-        this.colorDust.clusterRes.seeds
-      )
       // theme
       this.$store.commit('theme/setPrimaryColor', primaryColor)
       this.$store.commit('theme/setAccentColor', accentColor)
       // draw
       this.colorDust.drawPalette()
-    },
-    updateLoopColors(mainColor, clusterColors) {
-      const scale = 1.1
-      const mcR =
-        mainColor[0].r * scale < 255 ? Math.floor(mainColor[0].r * scale) : 255
-      const mcG =
-        mainColor[0].g * scale < 255 ? Math.floor(mainColor[0].g * scale) : 255
-      const mcB =
-        mainColor[0].b * scale < 255 ? Math.floor(mainColor[0].b * scale) : 255
-      const mcR2 =
-        mcR * scale * scale < 255 ? Math.floor(mcR * scale * scale) : 255
-      const mcG2 =
-        mcG * scale * scale < 255 ? Math.floor(mcG * scale * scale) : 255
-      const mcB2 =
-        mcB * scale * scale < 255 ? Math.floor(mcB * scale * scale) : 255
-      const step = Math.floor(clusterColors.length / 3)
-      const bc1 = hslToRgb(
-        clusterColors[0].h,
-        clusterColors[0].s,
-        clusterColors[0].l
-      )
-      const bc2 = hslToRgb(
-        clusterColors[step].h,
-        clusterColors[step].s,
-        clusterColors[step].l
-      )
-      const bc3 = hslToRgb(
-        clusterColors[step * 2].h,
-        clusterColors[step * 2].s,
-        clusterColors[step * 2].l
-      )
-      const loopColors = [
-        [
-          'rgb(' + mcR + ',' + mcG + ',' + mcB + ')',
-          'rgb(' + mcR2 + ',' + mcG2 + ',' + mcB2 + ')',
-        ],
-        [
-          'rgba(' + bc1[0] + ',' + bc1[1] + ',' + bc1[2] + ',0.4)',
-          'rgba(' + bc1[0] + ',' + bc1[1] + ',' + bc1[2] + ',0.7)',
-        ],
-        [
-          'rgba(' + bc2[0] + ',' + bc2[1] + ',' + bc2[2] + ',0.4)',
-          'rgba(' + bc2[0] + ',' + bc2[1] + ',' + bc2[2] + ',0.7)',
-        ],
-        [
-          'rgba(' + bc3[0] + ',' + bc3[1] + ',' + bc3[2] + ',0.4)',
-          'rgba(' + bc3[0] + ',' + bc3[1] + ',' + bc3[2] + ',0.7)',
-        ],
-      ]
-      this.$store.commit('setLoopColors', loopColors)
     },
   },
 }
