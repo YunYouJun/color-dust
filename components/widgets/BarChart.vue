@@ -1,5 +1,16 @@
 <template>
-  <div id="bar-chart-container"></div>
+  <div>
+    <v-text-field
+      v-model="top"
+      :label="$t('home.pie.top')"
+      type="number"
+      outlined
+      dense
+      min="0"
+      @input="reDraw"
+    ></v-text-field>
+    <div id="bar-chart-container"></div>
+  </div>
 </template>
 
 <script>
@@ -13,19 +24,27 @@ export default {
       },
     },
   },
+  data() {
+    return {
+      top: 20,
+    }
+  },
   watch: {
     colors(val, oldVal) {
       if (val.length === 0 && oldVal.length === 0) return
 
       if (!this.barChart) {
-        this.barChart = this.drawBarChart(val.slice(0, 19))
+        this.barChart = this.drawBarChart(val.slice(0, this.top))
       } else if (val.length !== 0) {
-        d3.select('#bar-chart-container').selectAll('svg').remove()
-        this.barChart = this.drawBarChart(val.slice(0, 19))
+        this.reDraw()
       }
     },
   },
   methods: {
+    reDraw() {
+      d3.select('#bar-chart-container').selectAll('svg').remove()
+      this.barChart = this.drawBarChart(this.colors.slice(0, this.top))
+    },
     drawBarChart(barChartData) {
       const barHeight = 25
       const margin = {

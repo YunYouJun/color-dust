@@ -14,7 +14,6 @@ Demo: <https://yunyoujun.cn/color-dust/>
 ## Todo
 
 - [ ] [TensorFlow.js](https://tensorflow.google.cn/js/)
-- [ ] 像素聚类力导向图
 
 ## Ref
 

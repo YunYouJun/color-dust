@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-card
+      :loading="loading"
       class="showcase-wrap"
       :class="{ censused: bgColor }"
       :style="{ backgroundColor: bgColor }"
@@ -79,6 +80,7 @@ import { isDark } from '~/packages/color-dust/utils'
 export default {
   data() {
     return {
+      loading: false,
       palette: true,
       colorDust: {},
       file: null,
@@ -116,17 +118,22 @@ export default {
           this.$toast.error(this.$t('home.upload.error'))
           return
         }
+        this.loading = true
         this.message = await this.colorDust.readFile(this.file)
       } else if (type === 'url') {
         if (!this.url) {
           this.$toast.error(this.$t('home.link.error'))
           return
         }
+        this.loading = true
         this.message = await this.colorDust.readFile(this.url)
       }
+      //
       if (this.message) {
+        // 读取结果提示信息
         this.$toast.info(this.message)
       }
+
       const colorsInfo = this.colorDust.colorsInfo
       const mainColor = this.colorDust.mainColor
       const primaryColor = this.colorDust.averageColor
@@ -149,6 +156,9 @@ export default {
       if (this.K) {
         this.colorDust.drawPalette()
       }
+
+      this.loading = false
+      this.$toast.success('处理完成')
     },
   },
 }
