@@ -4,7 +4,7 @@
       <v-list-item
         v-for="(item, i) in items"
         :key="i"
-        :to="item.to"
+        :to="$i18n.path(item.to)"
         router
         exact
       >
@@ -32,23 +32,23 @@ export default {
       items: [
         {
           icon: '$vuetify.icons.mdiHome',
-          title: 'Welcome',
-          to: '/',
+          title: this.$t('links.home'),
+          to: '',
         },
         {
           icon: '$vuetify.icons.mdiImageMultiple',
-          title: 'Album',
-          to: '/album',
+          title: this.$t('links.album'),
+          to: 'album',
         },
         {
           icon: '$vuetify.icons.mdiTools',
           title: 'Tools',
-          to: '/tools',
+          to: 'tools',
         },
         {
           icon: '$vuetify.icons.mdiInformation',
-          title: 'About',
-          to: '/about',
+          title: this.$t('links.about'),
+          to: 'about',
         },
       ],
     }

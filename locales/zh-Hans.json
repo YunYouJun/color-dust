@@ -1,0 +1,41 @@
+{
+  "title": "色尘",
+  "links": {
+    "home": "主页",
+    "album": "相册",
+    "about": "关于"
+  },
+  "color": {
+    "clustered": "K-Means 生成的簇色彩",
+    "main": "主色",
+    "average": "平均色",
+    "bubble-chart": "更多的色彩（气泡图）",
+    "info": {
+      "amount": "在您的图片中发现了 {amount} 种色彩。",
+      "time": "提取颜色花了 {time} 毫秒。",
+      "kmeans": "K-Means 用 {time} 毫秒迭代了 {iteration} 次。",
+      "top5": "前五的色彩占总色彩的 {percent}%。"
+    }
+  },
+  "home": {
+    "blur": {
+      "label": "模糊度（px）"
+    },
+    "upload": {
+      "placeholder": "上传图片以提取色彩"
+    },
+    "palette": {
+      "hint": "想要多少种色彩？（设置为 0 以不显示调色盘）"
+    }
+  },
+  "album": {
+    "tooltip": "你可以通过点击卡片来切换至一个和图片相似的颜色主题。（可能需要点时间加载图片）"
+  },
+  "about": {
+    "description": "色尘，佛教语。“六尘”之一。 即眼根（视觉）所触及的尘境。",
+    "quote": {
+      "content": "色尘知有数，劫烬岂无年。",
+      "from": "—— 唐·李绅《题法华寺》"
+    }
+  }
+}

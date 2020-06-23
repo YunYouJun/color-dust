@@ -1,10 +1,22 @@
 <template>
   <v-app :style="{ backgroundColor: getBgColor }">
     <nav-drawer :color="getFgColor"></nav-drawer>
-    <v-app-bar app clipped-left fixed :color="getFgColor">
+    <v-app-bar app clipped-left fixed :color="getFgColor" :elevation="1">
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title v-text="title" />
+      <v-toolbar-title v-text="$t('title')" />
       <v-spacer />
+      <v-btn
+        icon
+        :to="
+          $i18n.locale === 'en'
+            ? '/zh' + $route.fullPath
+            : $route.fullPath.replace(/^\/[^\/]+/, '')
+        "
+        exact
+        nuxt
+      >
+        <v-icon>$vuetify.icons.mdiTranslate</v-icon>
+      </v-btn>
       <v-btn icon @click.stop="$store.commit('theme/exchange')">
         <v-icon v-if="$store.state.theme.isExchanged"
           >$vuetify.icons.mdiToggleSwitch</v-icon
@@ -26,17 +38,12 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import NavDrawer from '~/components/layout/NavDrawer'
-import BaseFooter from '~/components/layout/BaseFooter'
+import NavDrawer from '~/components/layouts/NavDrawer'
+import BaseFooter from '~/components/layouts/BaseFooter'
 export default {
   components: {
     NavDrawer,
     BaseFooter,
-  },
-  data() {
-    return {
-      title: 'Color Dust',
-    }
   },
   computed: {
     ...mapGetters('theme', ['getBgColor', 'getFgColor']),

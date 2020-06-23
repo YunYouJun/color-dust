@@ -174,7 +174,7 @@ export default class ColorDust {
           continue // too dark
         }
         pixelCount++
-        // key (h, s, l) => (100, 100, 100)
+        // hex 作为 key 会很慢
         hKey = Math.floor(hsl[0] / 10) * 10000
         sKey = Math.floor(hsl[1] / 5) * 100
         lKey = Math.floor(hsl[2] / 5)
@@ -185,18 +185,20 @@ export default class ColorDust {
           keys.push(key)
           colorsInfo.push({
             key,
-            fre: 1,
+            count: 1,
             r,
             g,
             b,
             h: hsl[0],
             s: hsl[1],
             l: hsl[2],
+            // hex: rgbToHex([r, g, b]),
+            hex: '0',
             category: -1,
           })
         } else {
-          // frequence
-          colorsInfo[index].fre++
+          // countquence
+          colorsInfo[index].count++
         }
         col += pixelStep
       }
@@ -209,13 +211,13 @@ export default class ColorDust {
     beginTime = new Date().getTime()
     // sort and filter rgbCensus
     colorsInfo.sort(function (pre, next) {
-      return next.fre - pre.fre
+      return next.count - pre.count
     })
     let len = colorsInfo.length
     // console.log('before filter: ', len)
     colorsInfo = colorsInfo.filter((color) => {
       // isolated color
-      const flag = color.fre < 5 - pixelStep && len > 400
+      const flag = color.count < 5 - pixelStep && len > 400
       return !flag
     })
     // top three color
@@ -239,10 +241,10 @@ export default class ColorDust {
     let fCount = 0
     len = colorsInfo.length
     while (len--) {
-      rCount += colorsInfo[len].r * colorsInfo[len].fre
-      gCount += colorsInfo[len].g * colorsInfo[len].fre
-      bCount += colorsInfo[len].b * colorsInfo[len].fre
-      fCount += colorsInfo[len].fre
+      rCount += colorsInfo[len].r * colorsInfo[len].count
+      gCount += colorsInfo[len].g * colorsInfo[len].count
+      bCount += colorsInfo[len].b * colorsInfo[len].count
+      fCount += colorsInfo[len].count
     }
 
     this.averageColor = rgbToHex({
@@ -272,7 +274,7 @@ export default class ColorDust {
           s: color.s,
           l: color.l,
           category: color.category,
-          fre: color.fre,
+          count: color.count,
         })
         continue
       }
@@ -292,7 +294,7 @@ export default class ColorDust {
           s: color.s,
           l: color.l,
           category: color.category,
-          fre: color.fre,
+          count: color.count,
         })
       }
       if (initSeed.length >= num) {
@@ -340,20 +342,20 @@ export default class ColorDust {
           hslCount[category].h = 0
           hslCount[category].s = 0
           hslCount[category].l = 0
-          hslCount[category].freCount = colors[len].fre
+          hslCount[category].count = colors[len].count
         } else {
-          hslCount[category].freCount += colors[len].fre
+          hslCount[category].count += colors[len].count
         }
       }
       len = colors.length
       while (len--) {
         category = colors[len].category
         hslCount[category].h +=
-          (colors[len].h * colors[len].fre) / hslCount[category].freCount
+          (colors[len].h * colors[len].count) / hslCount[category].count
         hslCount[category].s +=
-          (colors[len].s * colors[len].fre) / hslCount[category].freCount
+          (colors[len].s * colors[len].count) / hslCount[category].count
         hslCount[category].l +=
-          (colors[len].l * colors[len].fre) / hslCount[category].freCount
+          (colors[len].l * colors[len].count) / hslCount[category].count
       }
       const flag = hslCount.every((ele, index) => {
         return (
@@ -368,7 +370,7 @@ export default class ColorDust {
           s: ele.s,
           l: ele.l,
           category: index,
-          fre: ele.freCount,
+          count: ele.count,
         }
       })
       if (flag) {
@@ -424,15 +426,15 @@ export default class ColorDust {
     let color
     while (len--) {
       color = colorInfo[len]
-      count += color.fre
+      count += color.count
       if (len < 50) {
-        top50Count += color.fre
+        top50Count += color.count
         if (len < 20) {
-          top20Count += color.fre
+          top20Count += color.count
           if (len < 10) {
-            top10Count += color.fre
+            top10Count += color.count
             if (len < 5) {
-              top5Count += color.fre
+              top5Count += color.count
             }
           }
         }

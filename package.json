@@ -28,7 +28,10 @@
     "@nuxtjs/dotenv": "^1.4.0",
     "@nuxtjs/pwa": "^3.0.0-0",
     "@nuxtjs/toast": "^3.3.0",
-    "nuxt": "^2.12.2"
+    "d3": "^5.16.0",
+    "d3-cloud": "^1.2.5",
+    "nuxt": "^2.12.2",
+    "vue-i18n": "^8.18.2"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^3.0.0",

@@ -12,4 +12,5 @@ export {
   mdiGithub,
   mdiCloud,
   mdiEarth,
+  mdiTranslate,
 } from '@mdi/js'

@@ -1,6 +1,21 @@
 export const state = () => ({
+  locales: ['en', 'zh'],
+  locale: 'zh',
   clusterColors: [],
-  colorsInfo: [],
+  colorsInfo: [
+    {
+      count: 1000,
+      hex: '#66CCFF',
+    },
+    {
+      count: 500,
+      hex: '#000000',
+    },
+    {
+      count: 200,
+      hex: '#999999',
+    },
+  ],
   loopColors: [
     ['rgb(222,244,255)', 'rgb(183,189,255)'],
     ['rgba(27,72,177,0.3)', 'rgba(27,72,177,0.7)'],
@@ -21,6 +36,11 @@ export const state = () => ({
 })
 
 export const mutations = {
+  SET_LANG(state, locale) {
+    if (state.locales.includes(locale)) {
+      state.locale = locale
+    }
+  },
   setScore(state, score) {
     state.score = score
   },

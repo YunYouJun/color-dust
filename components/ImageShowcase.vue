@@ -4,17 +4,22 @@
       class="showcase-wrap"
       :class="{ censused: bgColor }"
       :style="{ backgroundColor: bgColor }"
-      :elevation="0"
     >
       <canvas ref="canvasShowcase" class="showcase"></canvas>
     </v-card>
-    <v-alert border="left" class="mt-4">
+    <v-alert
+      color="primary"
+      colored-border
+      border="left"
+      class="mt-4"
+      elevation="2"
+    >
       <v-row>
         <v-col cols="12" md="6">
           <v-file-input
             v-model="file"
             accept="image/*"
-            placeholder="Upload image to parse."
+            :placeholder="$t('home.upload.placeholder')"
             prepend-icon="$vuetify.icons.mdiImage"
             small-chips
             show-size
@@ -28,27 +33,26 @@
         <v-col cols="6" md="6">
           <v-text-field
             v-model="blur"
-            label="Blur"
+            :label="$t('home.blur.label')"
             type="number"
             outlined
             dense
+            min="0"
           ></v-text-field>
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="12" md="2">
-          <v-checkbox v-model="palette" dense label="Palette"></v-checkbox>
-        </v-col>
-        <v-col cols="12" md="10">
+        <v-col cols="12" md="12">
           <v-slider
             v-model="K"
             class="mt-5"
-            min="3"
+            min="0"
             max="20"
             thumb-label="always"
             prepend-icon="$vuetify.icons.mdiPalette"
             dense
-            hint="How many colors?"
+            :hint="$t('home.palette.hint')"
+            persistent-hint
             @end="censusImage"
           ></v-slider>
         </v-col>
@@ -80,6 +84,7 @@ export default {
   mounted() {
     const canvas = this.$refs.canvasShowcase
     this.colorDust = new ColorDust(canvas)
+    this.colorDust.K = this.K
   },
   methods: {
     censusImage() {
@@ -101,11 +106,9 @@ export default {
       }
       const colorsInfo = this.colorDust.colorsInfo
       const mainColor = this.colorDust.mainColor
-      // const mainColorRGB =
-      //   colorsInfo[0].r + ',' + colorsInfo[0].g + ',' + colorsInfo[0].b
-      // const primaryColor = 'rgba(' + mainColorRGB + ',0.8)'
       const primaryColor = this.colorDust.averageColor
       const accentColor = mainColor[0]
+
       this.$vuetify.theme.dark = isDark(accentColor)
 
       this.$store.commit('setColorsInfo', colorsInfo)
@@ -117,7 +120,9 @@ export default {
       this.$store.commit('theme/setPrimaryColor', primaryColor)
       this.$store.commit('theme/setAccentColor', accentColor)
       // draw
-      this.colorDust.drawPalette()
+      if (this.K) {
+        this.colorDust.drawPalette()
+      }
     },
   },
 }

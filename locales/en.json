@@ -1,0 +1,41 @@
+{
+  "title": "Color Dust",
+  "links": {
+    "home": "Home",
+    "album": "Album",
+    "about": "About"
+  },
+  "color": {
+    "clustered": "Clustered Colors By K-Means",
+    "main": "Main Color",
+    "average": "Average Color",
+    "bubble-chart": "More Colors In Bubble Chart",
+    "info": {
+      "amount": "Found about {amount} colors in your image.",
+      "time": "Color Census Time is {time} ms.",
+      "kmeans": "K-Means iterated {iteration} times with cost of {time} ms.",
+      "top5": "The top5 colors account for {percent}% of total."
+    }
+  },
+  "home": {
+    "blur": {
+      "label": "Blur (px)"
+    },
+    "upload": {
+      "placeholder": "Upload Image To Parse"
+    },
+    "palette": {
+      "hint": "How many colors? (0 to hide Palette)"
+    }
+  },
+  "album": {
+    "tooltip": "You can click the card to switch to a theme similar to the picture. (Just need some time to load image.)"
+  },
+  "about": {
+    "description": "Color dust, Buddhist language. One of \"Six Dust\". That is the dust environment touched by the root of the eye (vision).",
+    "quote": {
+      "content": "The dust is known, and the robbery is not young.",
+      "from": "——Tang Lishen \"Tifa Hua Temple\""
+    }
+  }
+}

@@ -26,11 +26,11 @@
 export default {
   data: () => ({
     items: [
-      {
-        href: 'https://github.com/YunYouJun/color-dust',
-        icon: '$vuetify.icons.mdiGithub',
-        color: 'black',
-      },
+      // {
+      //   href: 'https://github.com/YunYouJun/color-dust',
+      //   icon: '$vuetify.icons.mdiGithub',
+      //   color: 'black',
+      // },
       {
         href: 'https://github.com/YunYouJun',
         icon: '$vuetify.icons.mdiCloud',

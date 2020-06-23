@@ -14,7 +14,6 @@ Demo: <https://yunyoujun.cn/color-dust/>
 ## Todo
 
 - [ ] [TensorFlow.js](https://tensorflow.google.cn/js/)
-- [ ] judge color Light and dark
 
 ## Ref
 

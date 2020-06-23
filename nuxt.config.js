@@ -6,6 +6,7 @@ const routerBase =
   {
     router: {
       base: '/' + pkg.name + '/',
+      middleware: 'i18n',
     },
   }
 // : {}
@@ -17,8 +18,8 @@ export default {
    ** Headers of the page
    */
   head: {
-    titleTemplate: '%s - ' + process.env.npm_package_name,
-    title: process.env.npm_package_name || '',
+    titleTemplate: '%s | Color Dust',
+    title: process.env.npm_package_name || 'Color Dust',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -28,7 +29,14 @@ export default {
         content: process.env.npm_package_description || '',
       },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    link: [
+      { rel: 'icon', type: 'image/x-icon', href: `/${pkg.name}/favicon.ico` },
+      {
+        rel: 'stylesheet',
+        href:
+          'https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap',
+      },
+    ],
     // script: [
     //   {
     //     src: ''
@@ -46,7 +54,7 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [],
+  plugins: ['~/plugins/i18n.js'],
   /*
    ** Nuxt.js dev-modules
    */

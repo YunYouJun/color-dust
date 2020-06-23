@@ -1,36 +1,25 @@
 <template>
   <div class="info-wrap">
     <v-alert border="left" colored-border color="success">
-      Found about
-      <span class="font-weight-bold">{{
-        $store.state.processInfo.colors
-      }}</span>
-      colors in your image.
+      {{ $t('color.info.amount', { amount: $store.state.processInfo.colors }) }}
     </v-alert>
     <v-alert border="left" colored-border color="info">
-      Color Census Time is
-      <span class="font-weight-bold">{{
-        $store.state.processInfo.censusTime
-      }}</span>
-      ms.
+      {{ $t('color.info.time', { time: $store.state.processInfo.censusTime }) }}
     </v-alert>
     <v-alert border="left" colored-border color="warning">
-      K-Means iterated
-      <span class="font-weight-bold">{{
-        $store.state.processInfo.kmeansIteration
-      }}</span>
-      times with cost of
-      <span class="font-weight-bold">{{
-        $store.state.processInfo.kmeansTime
-      }}</span>
-      ms.
+      {{
+        $t('color.info.kmeans', {
+          iteration: $store.state.processInfo.kmeansIteration,
+          time: $store.state.processInfo.kmeansTime,
+        })
+      }}
     </v-alert>
     <v-alert border="left" colored-border color="error">
-      The top5 colors account for
-      <span class="font-weight-bold"
-        >{{ $store.state.processInfo.top5Count.toFixed(2) }}%</span
-      >
-      of total.
+      {{
+        $t('color.info.top5', {
+          percent: $store.state.processInfo.top5Count.toFixed(2),
+        })
+      }}
     </v-alert>
   </div>
 </template>

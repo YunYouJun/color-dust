@@ -1,6 +1,6 @@
 <template>
   <div class="color-bar">
-    <v-alert border="left" colored-border elevation="2">
+    <v-alert border="left" :color="colors[0]" colored-border elevation="2">
       <h3 class="title">
         <span class="label text-capitalize">{{ label }}</span>
         <span class="value font-weight-light text-uppercase ml-2">

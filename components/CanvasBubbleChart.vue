@@ -1,8 +1,8 @@
 <template>
   <div class="bubble-chart">
-    <v-alert border="left" colored-border elevation="2">
-      <h2 class="headline font-weight-light ml-2">
-        More Colors In Bubble Chart
+    <v-alert color="blue-grey" border="left" colored-border elevation="2">
+      <h2 class="headline ml-2">
+        {{ $t('color.bubble-chart') }}
       </h2>
       <v-divider class="my-2"></v-divider>
       <v-card class="text-center" :elevation="0">
@@ -31,7 +31,6 @@
 </style>
 
 <script>
-import { hslToRgb, rgbToHex } from '~/packages/color-dust/utils'
 export default {
   props: {
     colors: {
@@ -171,8 +170,8 @@ export default {
       for (let i = 0; i < len; ) {
         color = colors[i]
         dataset.push({
-          weight: color.fre,
-          color: rgbToHex(hslToRgb(color.h, color.s, color.l)),
+          weight: color.count,
+          color: color.hex,
         })
         i += cStep
       }
@@ -325,7 +324,6 @@ export default {
         y: y - bbox.top,
       }
     },
-
     createDataset() {
       const dataset = []
       dataset.push({
