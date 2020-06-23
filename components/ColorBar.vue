@@ -4,7 +4,7 @@
       <h3 class="title">
         <span class="label text-capitalize">{{ label }}</span>
         <span class="value font-weight-light text-uppercase ml-2">
-          <span v-for="(color, i) in colors" :key="i" :style="{ color }">
+          <span v-for="(color, i) in colors" :key="i">
             <i class="color-box" :style="{ backgroundColor: color }"></i>
             <span>{{ color }}</span>
           </span>

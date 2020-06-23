@@ -18,14 +18,22 @@
     }
   },
   "home": {
+    "link": {
+      "label": "Link For Picture",
+      "error": "Please input image url!"
+    },
     "blur": {
       "label": "Blur (px)"
     },
     "upload": {
-      "placeholder": "Upload Image To Parse"
+      "placeholder": "Upload Image To Parse",
+      "error": "Please upload image to parse!"
     },
     "palette": {
       "hint": "How many colors? (0 to hide Palette)"
+    },
+    "pie": {
+      "top": "Top Colors"
     }
   },
   "album": {

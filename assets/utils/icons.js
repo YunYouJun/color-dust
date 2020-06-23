@@ -13,4 +13,9 @@ export {
   mdiCloud,
   mdiEarth,
   mdiTranslate,
+  mdiChartBar,
+  mdiPlus,
+  mdiChartPie,
+  mdiRelationManyToMany,
+  mdiLink,
 } from '@mdi/js'

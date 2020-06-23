@@ -1,4 +1,4 @@
-import { rgbToHsl, hslToRgb, rgbToHex } from './utils'
+import { rgbToHsl, hslToRgb, rgbToHex, getHslKey } from './utils'
 export default class ColorDust {
   constructor(canvas, K) {
     // canvas
@@ -20,7 +20,7 @@ export default class ColorDust {
       top5Count: 0,
     }
     this.mainColor = []
-    this.averageColor = []
+    this.averageColor = ''
     this.clusterRes = {}
     this.score = ''
     if (K) {
@@ -138,7 +138,7 @@ export default class ColorDust {
       return 'Can not read image data, maybe because of cross-domain limitation.'
     }
     const keys = []
-    let hKey, sKey, lKey, r, g, b
+    let r, g, b
     let pixelCount = 0
     const pixelStep = imageData.height * imageData.width < 600 * 600 ? 1 : 2
     let colorStep = Math.round(
@@ -175,10 +175,7 @@ export default class ColorDust {
         }
         pixelCount++
         // hex 作为 key 会很慢
-        hKey = Math.floor(hsl[0] / 10) * 10000
-        sKey = Math.floor(hsl[1] / 5) * 100
-        lKey = Math.floor(hsl[2] / 5)
-        key = hKey + sKey + lKey
+        key = getHslKey(hsl[0], hsl[1], hsl[2])
         const index = keys.indexOf(key)
 
         if (index < 0) {
@@ -192,8 +189,7 @@ export default class ColorDust {
             h: hsl[0],
             s: hsl[1],
             l: hsl[2],
-            // hex: rgbToHex([r, g, b]),
-            hex: '0',
+            hex: rgbToHex([r, g, b]),
             category: -1,
           })
         } else {
@@ -227,8 +223,9 @@ export default class ColorDust {
       rgbToHex(colorsInfo[2]),
     ]
     // k-mean clustering
-    const initSeed1 = this.chooseSeedColors(colorsInfo, this.K)
-    this.clusterRes = this.kMC(colorsInfo, initSeed1, 100)
+    const initSeed = this.chooseSeedColors(colorsInfo, this.K)
+    this.initSeed = initSeed
+    this.clusterRes = this.kMC(colorsInfo, initSeed, 100)
 
     this.clusterColors = this.clusterRes.seeds
     this.clusterColors = this.clusterColors.map((color) => {
@@ -357,6 +354,7 @@ export default class ColorDust {
         hslCount[category].l +=
           (colors[len].l * colors[len].count) / hslCount[category].count
       }
+      // 每一个聚类种子都和附近的颜色差值很小
       const flag = hslCount.every((ele, index) => {
         return (
           Math.abs(ele.h - seeds[index].h) < 0.5 &&
@@ -393,6 +391,7 @@ export default class ColorDust {
     }
   }
 
+  // 颜色分类（蕨类过程）
   classifyColor(color, classes) {
     let len = classes.length
     let min = 10000
@@ -407,6 +406,7 @@ export default class ColorDust {
         minIndex = len
       }
     }
+    // 颜色所属的类别
     color.category = minIndex
   }
 
@@ -417,7 +417,7 @@ export default class ColorDust {
       top10Count: 0,
       top5Count: 0,
     }
-    let count = 0
+    let total = 0
     let top50Count = 0
     let top20Count = 0
     let top10Count = 0
@@ -426,7 +426,7 @@ export default class ColorDust {
     let color
     while (len--) {
       color = colorInfo[len]
-      count += color.count
+      total += color.count
       if (len < 50) {
         top50Count += color.count
         if (len < 20) {
@@ -441,10 +441,11 @@ export default class ColorDust {
       }
     }
     len = colorInfo.length
-    info.top50Count = top50Count / count
-    info.top20Count = top20Count / count
-    info.top10Count = top10Count / count
-    info.top5Count = top5Count / count
+    info.total = total
+    info.top50Count = top50Count / total
+    info.top20Count = top20Count / total
+    info.top10Count = top10Count / total
+    info.top5Count = top5Count / total
     return info
   }
 

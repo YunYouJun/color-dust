@@ -96,7 +96,8 @@ export default {
       }, [])
     },
     drawWordCloud() {
-      const width = document.getElementById('wordcloud-container').clientWidth
+      const width =
+        document.getElementById('wordcloud-container').clientWidth - 50
       const height = this.height
       const svg = d3
         .select('#wordcloud-container')

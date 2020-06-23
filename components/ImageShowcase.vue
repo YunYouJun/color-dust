@@ -15,6 +15,18 @@
       elevation="2"
     >
       <v-row>
+        <v-col cols="10">
+          <v-text-field
+            v-model="url"
+            :label="$t('home.link.label')"
+            prepend-icon="$vuetify.icons.mdiLink"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="2" class="text-center">
+          <v-btn fab color="blue-grey" dark @click="startProcess('url')">
+            <v-icon>$vuetify.icons.mdiEyedropper</v-icon>
+          </v-btn>
+        </v-col>
         <v-col cols="12" md="6">
           <v-file-input
             v-model="file"
@@ -26,7 +38,7 @@
             outlined
             dense
             hide-details
-            @change="startProcess"
+            @change="startProcess('file')"
             @click:clear="handleClearClick"
           ></v-file-input>
         </v-col>
@@ -69,8 +81,8 @@ export default {
     return {
       palette: true,
       colorDust: {},
-      // bgColor: '',
       file: null,
+      url: '',
       K: 6,
       message: '',
       blur: 0,
@@ -98,9 +110,20 @@ export default {
       this.colorDust.clearCanvas()
       this.$store.dispatch('resetApp')
     },
-    async startProcess() {
-      if (!this.file) return
-      this.message = await this.colorDust.readFile(this.file)
+    async startProcess(type) {
+      if (type === 'file') {
+        if (!this.file) {
+          this.$toast.error(this.$t('home.upload.error'))
+          return
+        }
+        this.message = await this.colorDust.readFile(this.file)
+      } else if (type === 'url') {
+        if (!this.url) {
+          this.$toast.error(this.$t('home.link.error'))
+          return
+        }
+        this.message = await this.colorDust.readFile(this.url)
+      }
       if (this.message) {
         this.$toast.info(this.message)
       }
@@ -116,6 +139,9 @@ export default {
       this.$store.commit('setMainColor', mainColor)
       this.$store.commit('setAverageColor', this.colorDust.averageColor)
       this.$store.commit('setProcessInfo', this.colorDust.processInfo)
+      // colors
+      this.$store.commit('colors/setTotal', this.colorDust.info.total)
+      this.$store.commit('colors/setInitSeed', this.colorDust.initSeed)
       // theme
       this.$store.commit('theme/setPrimaryColor', primaryColor)
       this.$store.commit('theme/setAccentColor', accentColor)

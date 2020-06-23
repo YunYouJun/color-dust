@@ -18,14 +18,22 @@
     }
   },
   "home": {
+    "link": {
+      "label": "图片链接",
+      "error": "请输入图片链接！"
+    },
     "blur": {
       "label": "模糊度（px）"
     },
     "upload": {
-      "placeholder": "上传图片以提取色彩"
+      "placeholder": "上传图片以提取色彩",
+      "error": "请先上传图片！"
     },
     "palette": {
       "hint": "想要多少种色彩？（设置为 0 以不显示调色盘）"
+    },
+    "pie": {
+      "top": "前几种色彩"
     }
   },
   "album": {

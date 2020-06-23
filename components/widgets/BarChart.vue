@@ -1,7 +1,5 @@
 <template>
-  <v-alert colored-border border="left" :elevation="2">
-    <div id="bar-chart-container"></div>
-  </v-alert>
+  <div id="bar-chart-container"></div>
 </template>
 
 <script>
@@ -18,21 +16,20 @@ export default {
   watch: {
     colors(val, oldVal) {
       if (val.length === 0 && oldVal.length === 0) return
-      const data = Array.from(oldVal.slice(0, 19))
 
-      if (oldVal.length !== 0) {
-        this.barChart.update(data)
+      if (!this.barChart) {
+        this.barChart = this.drawBarChart(val.slice(0, 19))
+      } else if (val.length !== 0) {
+        d3.select('#bar-chart-container').selectAll('svg').remove()
+        this.barChart = this.drawBarChart(val.slice(0, 19))
       }
     },
   },
-  mounted() {
-    this.barChart = this.drawBarChart(this.colors)
-  },
   methods: {
     drawBarChart(barChartData) {
-      const barHeight = 30
+      const barHeight = 25
       const margin = {
-        top: 0,
+        top: 12,
         left: 70,
         bottom: 0,
         right: 0,
@@ -45,6 +42,7 @@ export default {
         .append('svg')
         .attr('id', 'bar-chart')
         .attr('viewBox', `0 0 ${width} ${height}`)
+        .attr('width', width)
         .attr('height', height)
         .append('g')
 
@@ -52,14 +50,15 @@ export default {
       const xScale = d3
         .scaleLinear()
         .domain([0, xMax])
-        .rangeRound([margin.left, width - margin.right])
+        .rangeRound([margin.left, width - margin.right - margin.left - 60])
+
       const yScale = d3
         .scaleBand()
         .domain(barChartData.map((d) => d.hex))
         .rangeRound([margin.top, height])
-        .paddingInner(0.2)
 
-      let bar = svg
+      // 颜色条
+      svg
         .append('g')
         .style('fill', 'dodgerblue')
         .join('g')
@@ -71,58 +70,32 @@ export default {
         .attr('x', xScale(0))
         .attr('y', (d) => yScale(d.hex))
         .attr('width', (d) => xScale(d.count))
-        .attr('height', yScale.bandwidth() - 1)
+        .attr('height', barHeight)
+
+      // 色彩数量文本
+      svg
+        .selectAll('text')
+        .data(barChartData)
+        .enter()
+        .append('text')
+        .text((d) => d.count)
+        .attr('x', (d) => xScale(d.count) + margin.left + 5)
+        .attr('y', (d) => yScale(d.hex) + 19)
+        .attr('text-anchor', 'start')
+        .attr('font-family', 'Source Code Pro')
+        .attr('fill', this.$vuetify.theme.dark ? 'white' : 'black')
 
       const yAxis = (g, y) =>
         g
           .attr('transform', `translate(${margin.left},0)`)
           .call(d3.axisLeft(y).tickSizeOuter(0))
+
       const gy = svg.append('g').call(yAxis, yScale)
       gy.selectAll('text')
         .attr('font-size', '0.9rem')
         .attr('font-family', 'Source Code Pro')
 
-      return Object.assign(svg.node(), {
-        update(data) {
-          const t = svg.transition().duration(750)
-
-          gy.transition(t).call(yAxis, yScale.domain(data.map((d) => d.hex)))
-
-          bar = bar
-            .data(data, (d) => d.hex)
-            .join(
-              (enter) =>
-                enter
-                  .append('rect')
-                  .style('mix-blend-mode', 'multiply')
-                  .attr('class', 'bar')
-                  .attr('fill', (d) => d.hex)
-                  .attr('x', xScale(0))
-                  .attr('y', (d) => yScale(d.hex))
-                  .attr('width', (d) => xScale(d.count))
-                  .attr('height', yScale.bandwidth() - 1),
-              (update) =>
-                update
-                  .attr('height', yScale.bandwidth() - 1)
-                  .attr('fill', (d) => d.hex),
-              (exit) =>
-                exit.call((bar) =>
-                  bar
-                    .transition()
-                    .duration(600)
-                    .remove()
-                    .attr('x', (d) => -xScale(d.count))
-                    .style('opacity', 0)
-                )
-            )
-            .call((bar) =>
-              bar
-                .transition(t)
-                .attr('width', (d) => xScale(d.count))
-                .attr('y', (d) => yScale(d.hex))
-            )
-        },
-      })
+      return svg.node()
     },
   },
 }

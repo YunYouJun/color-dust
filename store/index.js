@@ -82,7 +82,7 @@ export const actions = {
       top5Count: 0,
       showQr: false,
     })
-    commit('setMainColor', '')
+    commit('setMainColor', [])
     commit('setAverageColor', '')
     // theme
     commit('theme/setPrimaryColor', '')

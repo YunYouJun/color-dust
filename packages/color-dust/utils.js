@@ -72,7 +72,7 @@ function rgbToHex(rgb) {
     const hex = rgbArray[i].toString(16)
     color += hex.length < 2 ? '0' + hex : hex
   }
-  return color
+  return color.toUpperCase()
 }
 
 function hexToRgb(hex) {
@@ -91,4 +91,17 @@ function isDark(color) {
   return color.r * 0.299 + color.g * 0.578 + color.b * 0.114 <= 192
 }
 
-export { rgbToHsl, hslToRgb, rgbToHex, isDark }
+/**
+ * HSL Key
+ * @param {*} h
+ * @param {*} s
+ * @param {*} l
+ */
+function getHslKey(h, s, l) {
+  const hKey = Math.floor(h / 10) * 10000
+  const sKey = Math.floor(s / 5) * 100
+  const lKey = Math.floor(l / 5)
+  return hKey + sKey + lKey
+}
+
+export { rgbToHsl, hslToRgb, rgbToHex, isDark, getHslKey }
