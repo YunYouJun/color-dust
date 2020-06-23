@@ -22,7 +22,7 @@ export default {
   mounted() {},
   methods: {
     filterData() {
-      const colorsInfo = this.$store.state.colorsInfo.slice(0, 500)
+      const colorsInfo = this.$store.state.colorsInfo.slice(0, 300)
       colorsInfo.forEach((color) => {
         this.links.push({
           source: color.category,
@@ -45,7 +45,7 @@ export default {
     },
     drawRelationChart() {
       const width = 800
-      const height = 800
+      const height = 600
 
       const links = this.links
       const nodes = this.nodes
