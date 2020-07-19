@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mt-4">
     <v-text-field
       v-model="top"
       :label="$t('home.pie.top')"
@@ -49,7 +49,7 @@ export default {
       const barHeight = 25
       const margin = {
         top: 12,
-        left: 70,
+        left: 15,
         bottom: 0,
         right: 0,
       }

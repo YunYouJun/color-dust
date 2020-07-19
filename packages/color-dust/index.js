@@ -214,6 +214,7 @@ export default class ColorDust {
     colorsInfo = colorsInfo.filter((color) => {
       // isolated color
       const flag = color.count < 5 - pixelStep && len > 400
+      // filter it
       return !flag
     })
     // top three color
@@ -258,13 +259,19 @@ export default class ColorDust {
     this.processInfo = processInfo
   }
 
+  /**
+   * 选择初始种子
+   * @param {*} colors
+   * @param {*} num
+   */
   chooseSeedColors(colors, num) {
     const initSeed = []
     const len = colors.length
     for (let i = 0; i < len; i++) {
       const l = initSeed.length
       const color = colors[i]
-      if (!i) {
+      // 第一个种子
+      if (i === 0) {
         color.category = 0
         initSeed.push({
           h: color.h,
@@ -273,29 +280,29 @@ export default class ColorDust {
           category: color.category,
           count: color.count,
         })
-        continue
-      }
-      let j = 0
-      for (; j < l; j++) {
-        const hDiff = Math.abs(initSeed[j].h - color.h)
-        const sDiff = Math.abs(initSeed[j].s - color.s)
-        const lDiff = Math.abs(initSeed[j].l - color.l)
-        if (hDiff + sDiff + lDiff < 45) {
+      } else {
+        let j = 0
+        for (; j < l; j++) {
+          const hDiff = Math.abs(initSeed[j].h - color.h)
+          const sDiff = Math.abs(initSeed[j].s - color.s)
+          const lDiff = Math.abs(initSeed[j].l - color.l)
+          if (hDiff + sDiff + lDiff < 45) {
+            break
+          }
+        }
+        if (j === l) {
+          color.category = initSeed.length
+          initSeed.push({
+            h: color.h,
+            s: color.s,
+            l: color.l,
+            category: color.category,
+            count: color.count,
+          })
+        }
+        if (initSeed.length >= num) {
           break
         }
-      }
-      if (j === l) {
-        color.category = initSeed.length
-        initSeed.push({
-          h: color.h,
-          s: color.s,
-          l: color.l,
-          category: color.category,
-          count: color.count,
-        })
-      }
-      if (initSeed.length >= num) {
-        break
       }
     }
     return initSeed
@@ -345,6 +352,7 @@ export default class ColorDust {
         }
       }
       len = colors.length
+      // 统计平均 hsl
       while (len--) {
         category = colors[len].category
         hslCount[category].h +=

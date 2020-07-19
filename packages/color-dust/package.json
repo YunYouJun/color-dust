@@ -3,7 +3,11 @@
   "version": "0.0.1",
   "description": "Census color info from image",
   "main": "index.js",
-  "author": "YunYouJun <me@yunyoujun.cn>",
+  "author": {
+    "name": "YunYouJun",
+    "email": "me@yunyoujun.cn",
+    "url": "https://www.yunyoujun.cn"
+  },
   "license": "MIT",
   "homepage": "https://github.com/YunYouJun/color-dust/packages/color-dust#readme",
   "bugs": {
