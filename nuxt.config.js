@@ -13,7 +13,7 @@ const routerBase =
 
 export default {
   ...routerBase,
-  mode: 'spa',
+  ssr: false,
   /*
    ** Headers of the page
    */

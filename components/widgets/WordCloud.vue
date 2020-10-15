@@ -4,7 +4,7 @@
     border="left"
     colored-border
     color="brown"
-    style="font-weight: bold;"
+    style="font-weight: bold"
     elevation="2"
   ></v-alert>
 </template>
@@ -96,8 +96,9 @@ export default {
       }, [])
     },
     drawWordCloud() {
-      const width =
-        document.getElementById('wordcloud-container').clientWidth - 50
+      const container = document.getElementById('wordcloud-container')
+      if (!container) return
+      const width = container.clientWidth - 50
       const height = this.height
       const svg = d3
         .select('#wordcloud-container')

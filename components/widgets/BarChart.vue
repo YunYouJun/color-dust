@@ -7,6 +7,7 @@
       outlined
       dense
       min="0"
+      hide-details
       @input="reDraw"
     ></v-text-field>
     <div id="bar-chart-container"></div>
@@ -48,8 +49,9 @@ export default {
     drawBarChart(barChartData) {
       const barHeight = 25
       const margin = {
-        top: 12,
-        left: 15,
+        top: 16,
+        // display 16 hex color
+        left: 72,
         bottom: 0,
         right: 0,
       }

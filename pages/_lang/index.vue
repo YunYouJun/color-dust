@@ -26,24 +26,26 @@
         <bar-chart :colors="$store.state.colorsInfo"></bar-chart>
       </border-card>
     </v-col>
-    <v-col cols="12">
-      <border-card :icons="pieIcons">
-        <pie-chart :colors="$store.state.colorsInfo"></pie-chart>
-      </border-card>
-    </v-col>
-    <v-col cols="12">
-      <border-card :icons="relationIcons">
-        <relation-chart :colors="$store.state.colorsInfo"></relation-chart>
-      </border-card>
-    </v-col>
-    <v-col cols="12">
-      <word-cloud :colors="$store.state.colorsInfo"></word-cloud>
-    </v-col>
-    <v-col cols="12">
-      <canvas-bubble-chart
-        :colors="$store.state.colorsInfo"
-      ></canvas-bubble-chart>
-    </v-col>
+    <template v-if="displayChart">
+      <v-col cols="12">
+        <border-card :icons="pieIcons">
+          <pie-chart :colors="$store.state.colorsInfo"></pie-chart>
+        </border-card>
+      </v-col>
+      <v-col cols="12">
+        <border-card :icons="relationIcons">
+          <relation-chart :colors="$store.state.colorsInfo"></relation-chart>
+        </border-card>
+      </v-col>
+      <v-col cols="12">
+        <word-cloud :colors="$store.state.colorsInfo"></word-cloud>
+      </v-col>
+      <v-col cols="12">
+        <canvas-bubble-chart
+          :colors="$store.state.colorsInfo"
+        ></canvas-bubble-chart>
+      </v-col>
+    </template>
   </v-row>
 </template>
 
@@ -74,6 +76,7 @@ export default {
   },
   data() {
     return {
+      displayChart: false,
       barIcons: [
         {
           name: '$vuetify.icons.mdiPalette',

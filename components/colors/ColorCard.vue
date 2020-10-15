@@ -2,7 +2,7 @@
   <v-card ripple hover :color="color" class="color-card" @click="copyColorHex">
     <h4
       class="pa-0 color-text text-uppercase subtitle-2"
-      style="font-family: Source Code Pro !important;"
+      style="font-family: Source Code Pro !important"
     >
       {{ color }}
     </h4>

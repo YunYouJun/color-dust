@@ -13,7 +13,7 @@
               <a
                 href="https://hanyu.baidu.com/shici/detail?pid=42650fdc9f454f0a89c90ad9ebb20009&highlight=色尘知有数，劫烬岂无年"
                 target="blank"
-                style="text-decoration: none;"
+                style="text-decoration: none"
                 >{{ $t('about.quote.from') }}
               </a>
             </em>

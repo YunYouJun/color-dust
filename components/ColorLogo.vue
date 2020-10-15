@@ -1,5 +1,5 @@
 <template>
-  <img class="ColorLogo" alt="Color Logo" src="~static/color.png" />
+  <img class="ColorLogo" alt="Color Logo" src="~static/icon.png" />
 </template>
 
 <style>
