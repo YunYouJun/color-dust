@@ -16,10 +16,17 @@
       elevation="2"
     >
       <v-row>
-        <v-col cols="10">
+        <v-col cols="1">
+          <v-checkbox v-model="displayChart" title="Display Chart">
+            <template #label>
+              <v-icon>$vuetify.icons.mdiChartPie</v-icon>
+            </template>
+          </v-checkbox>
+        </v-col>
+        <v-col cols="9">
           <v-text-field
             v-model="url"
-            :label="$t('home.link.label')"
+            :label="$t('home.url.label')"
             prepend-icon="$vuetify.icons.mdiLink"
           ></v-text-field>
         </v-col>
@@ -43,7 +50,7 @@
             @click:clear="handleClearClick"
           ></v-file-input>
         </v-col>
-        <v-col cols="6" md="6">
+        <v-col cols="6" md="4">
           <v-text-field
             v-model="blur"
             :label="$t('home.blur.label')"
@@ -94,6 +101,14 @@ export default {
     bgColor() {
       return this.$store.state.theme.primaryColor
     },
+    displayChart: {
+      get() {
+        return this.$store.state.main.displayChart
+      },
+      set(val) {
+        this.$store.commit('main/setDisplayChart', val)
+      },
+    },
   },
   mounted() {
     const canvas = this.$refs.canvasShowcase
@@ -122,13 +137,12 @@ export default {
         this.message = await this.colorDust.readFile(this.file)
       } else if (type === 'url') {
         if (!this.url) {
-          this.$toast.error(this.$t('home.link.error'))
+          this.$toast.error(this.$t('home.url.error'))
           return
         }
         this.loading = true
         this.message = await this.colorDust.readFile(this.url)
       }
-      //
       if (this.message) {
         // 读取结果提示信息
         this.$toast.info(this.message)

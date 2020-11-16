@@ -22,14 +22,6 @@
   </div>
 </template>
 
-<style scoped>
-#bubble-chart {
-  width: 100%;
-  max-width: 600px;
-  height: 400px;
-}
-</style>
-
 <script>
 export default {
   props: {
@@ -81,9 +73,10 @@ export default {
       if (this.$refs.selectColor) {
         const hex = this.$refs.selectColor.textContent
         navigator.clipboard.writeText(hex.toUpperCase())
-        this.$toast.success(
-          `Copy &nbsp;<strong style="color:${this.selectColor};">${this.selectColor}</strong>&nbsp; successfully!`
-        )
+        this.$toast
+          .success
+          // `Copy <strong style="color:${this.selectColor};">${this.selectColor}</strong> successfully!`
+          ()
       }
     },
     initBubbles(bubbles) {
@@ -273,6 +266,7 @@ export default {
       const scale = (now - this.beginTime) * this.speed
       const canvas = this.$refs.bubbleChart
       const ctx = this.ctx
+      if (!ctx) return
       const bubbles = this.bubbles
       let len = bubbles.length
       ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -349,3 +343,11 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+#bubble-chart {
+  width: 100%;
+  max-width: 600px;
+  height: 400px;
+}
+</style>

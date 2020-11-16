@@ -1,8 +1,17 @@
 <template>
-  <div>
-    <v-card class="showcase-wrap">
-      <canvas ref="blurCanvas" class="showcase"></canvas>
-    </v-card>
+  <div class="text-center">
+    <v-row>
+      <v-col cols="6">
+        <v-card class="img-canvas-container">
+          <canvas ref="originCanvas" class="img-canvas" height="480"></canvas>
+        </v-card>
+      </v-col>
+      <v-col cols="6">
+        <v-card class="img-canvas-container">
+          <canvas ref="blurCanvas" class="img-canvas" height="480"></canvas>
+        </v-card>
+      </v-col>
+    </v-row>
     <v-alert border="left" class="mt-4">
       <v-file-input
         v-model="file"
@@ -14,7 +23,7 @@
         outlined
         dense
         hide-details
-        @change="readImage"
+        @change="handleFileChange"
         @click:clear="handleClearClick"
       ></v-file-input>
     </v-alert>
@@ -22,101 +31,44 @@
 </template>
 
 <script>
+import { readImage, drawToCanvas, clearCanvas } from '~/assets/utils/index'
 export default {
   data() {
     return {
       pixelRatio: window.devicePixelRatio || 1,
       file: null,
+      url: '/color-dust/icon.png',
     }
   },
+  mounted() {
+    this.handleFileChange()
+  },
   methods: {
-    readImage() {
-      if (!this.file) return
-      let url = this.file
-      // to base64
-      if (url instanceof File) {
-        const reader = new FileReader()
-        reader.readAsDataURL(url)
-        return new Promise((resolve) => {
-          reader.onload = async (e) => {
-            await this.drawToCanvas(e.target.result, this.$refs.blurCanvas)
-            resolve()
-          }
-        })
-      } else {
-        const xhr = new XMLHttpRequest()
-        return new Promise((resolve) => {
-          xhr.onload = async (e) => {
-            url = URL.createObjectURL(e.target.response)
-            await this.drawToCanvas(url, this.$refs.blurCanvas)
-            resolve()
-          }
-          xhr.open('GET', url, true)
-          xhr.responseType = 'blob'
-          xhr.send()
-        })
-      }
-    },
-    drawToCanvas(src, canvas) {
-      const pixelRatio = this.pixelRatio
-      const ctx = canvas.getContext('2d')
-      const img = new Image()
-      img.src = src
-      img.crossOrigin = 'anonymous'
-      return new Promise((resolve) => {
-        img.onload = () => {
-          ctx.clearRect(0, 0, canvas.width, canvas.height)
-          let _w = 0
-          let _h = 0
-          if (img.width < img.height) {
-            _w = 100 * pixelRatio
-            this.isHorizontal = false
-          } else {
-            _h = 100 * pixelRatio
-            this.isHorizontal = true
-          }
-          let imgWidth =
-            img.width > (canvas.width - _w) / pixelRatio
-              ? (canvas.width - _w) / pixelRatio
-              : img.width
-          let imgHeight =
-            img.height > (canvas.height - _h) / pixelRatio
-              ? (canvas.height - _h) / pixelRatio
-              : img.height
-          const scale =
-            imgWidth / img.width < imgHeight / img.height
-              ? imgWidth / img.width
-              : imgHeight / img.height
-          imgWidth = img.width * scale
-          imgHeight = img.height * scale
-          canvas.style.width = imgWidth + _w / pixelRatio + 'px'
-          canvas.style.height = imgHeight + _h / pixelRatio + 'px'
-          canvas.width = imgWidth * pixelRatio + _w
-          canvas.height = imgHeight * pixelRatio + _h
-          ctx.drawImage(
-            img,
-            0,
-            0,
-            img.width,
-            img.height,
-            0,
-            0,
-            imgWidth * pixelRatio,
-            imgHeight * pixelRatio
-          )
-          resolve()
-        }
+    async handleFileChange() {
+      const uri = this.file || this.url
+      const image = await readImage(uri)
+
+      drawToCanvas(image, this.$refs.originCanvas)
+      drawToCanvas(image, this.$refs.blurCanvas, {
+        blur: '20px',
       })
     },
-    blur() {
-      // console.log('blur')
-    },
     handleClearClick() {
-      this.colorDust.clearCanvas()
+      clearCanvas(this.$refs.originCanvas)
+      clearCanvas(this.$refs.blurCanvas)
       this.$store.dispatch('resetApp')
     },
   },
 }
 </script>
 
-<style></style>
+<style lang="scss">
+.img-canvas {
+  &-container {
+    height: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+</style>

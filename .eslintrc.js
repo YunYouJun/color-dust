@@ -4,11 +4,8 @@ module.exports = {
     browser: true,
     node: true,
   },
-  parserOptions: {
-    parser: 'babel-eslint',
-  },
   extends: [
-    '@nuxtjs',
+    '@nuxtjs/eslint-config-typescript',
     'prettier',
     'prettier/vue',
     'plugin:prettier/recommended',
@@ -16,5 +13,7 @@ module.exports = {
   ],
   plugins: ['prettier'],
   // add your custom rules here
-  rules: {},
+  rules: {
+    'unicorn/number-literal-case': 'off',
+  },
 }

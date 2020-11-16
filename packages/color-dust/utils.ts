@@ -1,16 +1,20 @@
-function rgbToHsl(r, g, b) {
+/**
+ * RGB To HSL
+ * @param r
+ * @param g
+ * @param b
+ */
+function rgbToHsl(r: number, g: number, b: number) {
   r /= 255
   g /= 255
   b /= 255
   const max = Math.max(r, g, b)
   const min = Math.min(r, g, b)
-  let h
-  let s
+  let h = 0
+  let s = 0
   const l = (max + min) / 2
 
-  if (max === min) {
-    h = s = 0 // achromatic
-  } else {
+  if (max !== min) {
     const d = max - min
     s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
     switch (max) {
@@ -30,7 +34,13 @@ function rgbToHsl(r, g, b) {
   return [h, s * 100, l * 100]
 }
 
-function hslToRgb(h, s, l) {
+/**
+ * HSL To RGB
+ * @param h
+ * @param s
+ * @param l
+ */
+function hslToRgb(h: number, s: number, l: number) {
   h = h / 360
   s = s / 100
   l = l / 100
@@ -39,7 +49,7 @@ function hslToRgb(h, s, l) {
   if (s === 0) {
     r = g = b = l // achromatic
   } else {
-    const hue2rgb = function (p, q, t) {
+    const hue2rgb = function (p: number, q: number, t: number) {
       if (t < 0) t += 1
       if (t > 1) t -= 1
       if (t < 1 / 6) return p + (q - p) * 6 * t
@@ -57,7 +67,20 @@ function hslToRgb(h, s, l) {
   return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)]
 }
 
-function rgbToHex(rgb) {
+/**
+ * RGB 模型
+ */
+interface RGB {
+  r: number
+  g: number
+  b: number
+}
+
+/**
+ * RGB
+ * @param rgb
+ */
+function rgbToHex(rgb: number[] | RGB) {
   if (!rgb) return
   let color = '#'
   let rgbArray = []
@@ -75,7 +98,11 @@ function rgbToHex(rgb) {
   return color.toUpperCase()
 }
 
-function hexToRgb(hex) {
+/**
+ * HEX To RGB
+ * @param hex
+ */
+function hexToRgb(hex: string) {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
   return result
     ? {
@@ -86,9 +113,17 @@ function hexToRgb(hex) {
     : null
 }
 
-function isDark(color) {
-  color = hexToRgb(color)
-  return color.r * 0.299 + color.g * 0.587 + color.b * 0.114 <= 192
+/**
+ * 是否为暗色
+ * @param color
+ */
+function isDark(color: string) {
+  const rgbColor: RGB | null = hexToRgb(color)
+  if (rgbColor) {
+    return rgbColor.r * 0.299 + rgbColor.g * 0.587 + rgbColor.b * 0.114 <= 192
+  } else {
+    return false
+  }
 }
 
 /**
@@ -97,7 +132,7 @@ function isDark(color) {
  * @param {*} s
  * @param {*} l
  */
-function getHslKey(h, s, l) {
+function getHslKey(h: number, s: number, l: number) {
   const hKey = Math.floor(h / 10) * 10000
   const sKey = Math.floor(s / 5) * 100
   const lKey = Math.floor(l / 5)

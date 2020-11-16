@@ -3,7 +3,8 @@
   "links": {
     "home": "Home",
     "album": "Album",
-    "about": "About"
+    "about": "About",
+    "cube": "Color Cube"
   },
   "color": {
     "clustered": "Clustered Colors By K-Means",
@@ -19,7 +20,7 @@
   },
   "home": {
     "link": {
-      "label": "Link For Picture",
+      "label": "Url For Picture",
       "error": "Please input image url!"
     },
     "blur": {

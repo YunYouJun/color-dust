@@ -22,7 +22,7 @@ export default {
       const curColor = this.color.toUpperCase()
       navigator.clipboard.writeText(curColor)
       this.$toast.success(
-        `Copy &nbsp;<strong style="color:${curColor}">${curColor}</strong>&nbsp; successfully!`
+        `Copy <strong style="color:${curColor}">${curColor}</strong> successfully!`
       )
     },
   },

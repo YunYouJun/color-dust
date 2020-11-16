@@ -46,6 +46,11 @@ export default {
           to: 'tools',
         },
         {
+          icon: '$vuetify.icons.mdiCube',
+          title: 'Cube',
+          to: 'cube',
+        },
+        {
           icon: '$vuetify.icons.mdiInformation',
           title: this.$t('links.about'),
           to: 'about',

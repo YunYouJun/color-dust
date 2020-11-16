@@ -21,12 +21,12 @@
     <v-col cols="12">
       <image-info></image-info>
     </v-col>
-    <v-col cols="12">
-      <border-card :icons="barIcons">
-        <bar-chart :colors="$store.state.colorsInfo"></bar-chart>
-      </border-card>
-    </v-col>
-    <template v-if="displayChart">
+    <template v-if="$store.state.main.displayChart">
+      <v-col cols="12">
+        <border-card :icons="barIcons">
+          <bar-chart :colors="$store.state.colorsInfo"></bar-chart>
+        </border-card>
+      </v-col>
       <v-col cols="12">
         <border-card :icons="pieIcons">
           <pie-chart :colors="$store.state.colorsInfo"></pie-chart>

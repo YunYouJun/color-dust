@@ -1,8 +1,27 @@
+import { ProcessInfo } from './typings'
+import { HSL } from './typings/color'
 import { rgbToHsl, hslToRgb, rgbToHex, getHslKey } from './utils'
 export default class ColorDust {
-  constructor(canvas, K) {
-    // canvas
-    this.canvas = canvas
+  ctx: CanvasRenderingContext2D | null
+  pixelRatio: number
+  oriWidth: number
+  oriHeight: number
+  colorsInfo: any[]
+  processInfo: ProcessInfo
+  mainColor: any[]
+  averageColor: string | undefined
+  clusterRes: any
+  score: string
+
+  isHorizontal: boolean
+
+  /**
+   * 初始种子
+   */
+  initSeed: any
+  clusterColors: any
+  info: any
+  constructor(public canvas: HTMLCanvasElement, public K: number = 6) {
     this.ctx = this.canvas.getContext('2d')
     this.pixelRatio = window.devicePixelRatio || 1
     this.canvas.width =
@@ -23,22 +42,21 @@ export default class ColorDust {
     this.averageColor = ''
     this.clusterRes = {}
     this.score = ''
-    if (K) {
-      this.K = K
-    } else {
-      this.K = 6
-    }
+
+    this.isHorizontal = true
   }
 
-  readFile(url) {
+  readFile(url: string | File) {
     // to base64
     if (url instanceof File) {
       const reader = new FileReader()
       reader.readAsDataURL(url)
       return new Promise((resolve) => {
         reader.onload = async (e) => {
-          await this.drawToCanvas(e.target.result)
-          this.censusImage()
+          if (e.target) {
+            await this.drawToCanvas(e.target.result as string)
+            this.censusImage()
+          }
           resolve()
         }
       })
@@ -46,22 +64,25 @@ export default class ColorDust {
       const xhr = new XMLHttpRequest()
       return new Promise((resolve) => {
         xhr.onload = async (e) => {
-          url = URL.createObjectURL(e.target.response)
-          await this.drawToCanvas(url)
-          this.censusImage()
+          if (e.target) {
+            url = URL.createObjectURL((e.target as any).response)
+            await this.drawToCanvas(url)
+            this.censusImage()
+          }
           resolve()
         }
-        xhr.open('GET', url, true)
+        xhr.open('GET', url as string, true)
         xhr.responseType = 'blob'
         xhr.send()
       })
     }
   }
 
-  drawToCanvas(src) {
+  drawToCanvas(src: string) {
     const pixelRatio = this.pixelRatio
     const canvas = this.canvas
     const ctx = this.ctx
+    if (!ctx) return
     const img = new Image()
     img.src = src
     img.crossOrigin = 'anonymous'
@@ -114,6 +135,7 @@ export default class ColorDust {
   censusImage() {
     const canvas = this.canvas
     const ctx = this.ctx
+    if (!ctx) return
     const pixelRatio = this.pixelRatio
 
     let beginTime = new Date().getTime()
@@ -146,18 +168,10 @@ export default class ColorDust {
     )
     colorStep = colorStep < 4 ? 4 : colorStep
 
-    const processInfo = {
-      colors: 0,
-      censusTime: 0,
-      kmeansIteration: 0,
-      kmeansTime: 0,
-      top5Count: 0,
-    }
-    processInfo.colorStep = colorStep
-
     // for bubble
     let colorsInfo = []
-    let hsl, key
+    let hsl: number[]
+    let key
     // get color
     for (let row = 1; row < imageData.height - 1; ) {
       for (let col = 1; col < imageData.width - 1; ) {
@@ -200,7 +214,18 @@ export default class ColorDust {
       }
       row += pixelStep
     }
-    processInfo.pixelCount = pixelCount
+
+    const processInfo = {
+      colors: 0,
+      censusTime: 0,
+      kmeansIteration: 0,
+      kmeansTime: 0,
+      top5Count: 0,
+
+      colorStep,
+      pixelCount,
+    }
+
     processInfo.censusTime = new Date().getTime() - beginTime
     processInfo.colors = colorsInfo.length
 
@@ -229,7 +254,7 @@ export default class ColorDust {
     this.clusterRes = this.kMC(colorsInfo, initSeed, 100)
 
     this.clusterColors = this.clusterRes.seeds
-    this.clusterColors = this.clusterColors.map((color) => {
+    this.clusterColors = this.clusterColors.map((color: HSL) => {
       return rgbToHex(hslToRgb(color.h, color.s, color.l))
     })
 
@@ -264,7 +289,7 @@ export default class ColorDust {
    * @param {*} colors
    * @param {*} num
    */
-  chooseSeedColors(colors, num) {
+  chooseSeedColors(colors: any, num: number) {
     const initSeed = []
     const len = colors.length
     for (let i = 0; i < len; i++) {
@@ -308,12 +333,12 @@ export default class ColorDust {
     return initSeed
   }
 
-  kMC(colors, seeds, maxStep) {
+  kMC(colors: any, seeds: any, maxStep: number) {
     let iteration = 0
 
     while (iteration++ < maxStep) {
       // filter seeds
-      seeds = seeds.filter((seed) => {
+      seeds = seeds.filter((seed: any) => {
         return seed
       })
 
@@ -338,15 +363,16 @@ export default class ColorDust {
       // compute center of category
       len = colors.length
       const hslCount = []
-      let category
+      let category: number
       while (len--) {
         category = colors[len].category
         if (!hslCount[category]) {
-          hslCount[category] = {}
-          hslCount[category].h = 0
-          hslCount[category].s = 0
-          hslCount[category].l = 0
-          hslCount[category].count = colors[len].count
+          hslCount[category] = {
+            h: 0,
+            s: 0,
+            l: 0,
+            count: colors[len].count,
+          }
         } else {
           hslCount[category].count += colors[len].count
         }
@@ -384,14 +410,14 @@ export default class ColorDust {
       }
     }
     // console.log('KMC iteration ' + iterationCount)
-    seeds.sort(function (pre, next) {
-      let preRgb = hslToRgb(pre.h, pre.s, pre.l)
-      preRgb = preRgb[0] + preRgb[1] + preRgb[2]
+    seeds.sort(function (pre: HSL, next: HSL) {
+      const preRgb = hslToRgb(pre.h, pre.s, pre.l)
+      const preTotal = preRgb[0] + preRgb[1] + preRgb[2]
       // let next_h = next.h;
       // next_h = next_h < 30 ? (next_h+330) : next_h;
-      let nextRgb = hslToRgb(next.h, next.s, next.l)
-      nextRgb = nextRgb[0] + nextRgb[1] + nextRgb[2]
-      return nextRgb - preRgb
+      const nextRgb = hslToRgb(next.h, next.s, next.l)
+      const nextTotal = nextRgb[0] + nextRgb[1] + nextRgb[2]
+      return nextTotal - preTotal
     })
     return {
       seeds,
@@ -400,7 +426,7 @@ export default class ColorDust {
   }
 
   // 颜色分类（蕨类过程）
-  classifyColor(color, classes) {
+  classifyColor(color: any, classes: HSL[]) {
     let len = classes.length
     let min = 10000
     let minIndex
@@ -418,8 +444,9 @@ export default class ColorDust {
     color.category = minIndex
   }
 
-  countColor(colorInfo) {
+  countColor(colorInfo: any) {
     const info = {
+      total: 0,
       top50Count: 0,
       top20Count: 0,
       top10Count: 0,
@@ -461,6 +488,7 @@ export default class ColorDust {
     const pixelRatio = this.pixelRatio
     const canvas = this.canvas
     const ctx = this.ctx
+    if (!ctx) return
     const len = this.isHorizontal ? canvas.width : canvas.height
     const interval = len * (this.K < 10 ? 0.02 : 0.01)
     // interval *= pixelRatio;

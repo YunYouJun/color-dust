@@ -3,7 +3,8 @@
   "links": {
     "home": "主页",
     "album": "相册",
-    "about": "关于"
+    "about": "关于",
+    "cube": "色彩方块"
   },
   "color": {
     "clustered": "K-Means 生成的簇色彩",
@@ -18,7 +19,7 @@
     }
   },
   "home": {
-    "link": {
+    "url": {
       "label": "图片链接",
       "error": "请输入图片链接！"
     },

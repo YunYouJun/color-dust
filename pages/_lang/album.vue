@@ -9,7 +9,7 @@
               aspect-ratio="1"
               class="grey lighten-2"
             >
-              <template v-slot:placeholder>
+              <template #placeholder>
                 <v-row class="fill-height ma-0" align="center" justify="center">
                   <v-progress-circular
                     indeterminate
@@ -33,20 +33,15 @@
   </v-row>
 </template>
 
-<style>
-.album-canvas {
-  position: fixed;
-  opacity: 0;
-  z-index: -1;
-  width: 300;
-  height: 300;
-}
-</style>
-
 <script>
 import ColorDust from '~/packages/color-dust'
 import { isDark } from '~/packages/color-dust/utils'
 export default {
+  head() {
+    return {
+      title: this.$t('links.album'),
+    }
+  },
   mounted() {
     this.colorDust = new ColorDust(this.$refs.albumDemo)
   },
@@ -66,10 +61,15 @@ export default {
       this.$store.commit('theme/setAccentColor', accentColor)
     },
   },
-  head() {
-    return {
-      title: this.$t('links.album'),
-    }
-  },
 }
 </script>
+
+<style>
+.album-canvas {
+  position: fixed;
+  opacity: 0;
+  z-index: -1;
+  width: 300;
+  height: 300;
+}
+</style>
