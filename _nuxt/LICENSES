@@ -1,13 +1,13 @@
 /*!
-  * vue-router v3.4.6
+  * vue-router v3.4.9
   * (c) 2020 Evan You
   * @license MIT
   */
 
 /*!
- * Chart.js v2.9.3
+ * Chart.js v2.9.4
  * https://www.chartjs.org
- * (c) 2019 Chart.js Contributors
+ * (c) 2020 Chart.js Contributors
  * Released under the MIT License
  */
 
@@ -24,7 +24,7 @@
  */
 
 /*!
- * vue-i18n v8.22.0 
+ * vue-i18n v8.22.2 
  * (c) 2020 kazuya kawaguchi
  * Released under the MIT License.
  */
