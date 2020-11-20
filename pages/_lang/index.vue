@@ -21,31 +21,29 @@
     <v-col cols="12">
       <image-info></image-info>
     </v-col>
-    <template v-if="$store.state.main.displayChart">
-      <v-col cols="12">
-        <border-card :icons="barIcons">
-          <bar-chart :colors="$store.state.colorsInfo"></bar-chart>
-        </border-card>
-      </v-col>
-      <v-col cols="12">
-        <border-card :icons="pieIcons">
-          <pie-chart :colors="$store.state.colorsInfo"></pie-chart>
-        </border-card>
-      </v-col>
-      <v-col cols="12">
-        <border-card :icons="relationIcons">
-          <relation-chart :colors="$store.state.colorsInfo"></relation-chart>
-        </border-card>
-      </v-col>
-      <v-col cols="12">
-        <word-cloud :colors="$store.state.colorsInfo"></word-cloud>
-      </v-col>
-      <v-col cols="12">
-        <canvas-bubble-chart
-          :colors="$store.state.colorsInfo"
-        ></canvas-bubble-chart>
-      </v-col>
-    </template>
+    <v-col v-if="$store.state.control.display.barChart" cols="12">
+      <border-card :icons="barIcons">
+        <bar-chart :colors="$store.state.colorsInfo"></bar-chart>
+      </border-card>
+    </v-col>
+    <v-col v-if="$store.state.control.display.pieChart" cols="12">
+      <border-card :icons="pieIcons">
+        <pie-chart :colors="$store.state.colorsInfo"></pie-chart>
+      </border-card>
+    </v-col>
+    <v-col v-if="$store.state.control.display.relationChart" cols="12">
+      <border-card :icons="relationIcons">
+        <relation-chart :colors="$store.state.colorsInfo"></relation-chart>
+      </border-card>
+    </v-col>
+    <v-col v-if="$store.state.control.display.wordCloud" cols="12">
+      <word-cloud :colors="$store.state.colorsInfo"></word-cloud>
+    </v-col>
+    <v-col v-if="$store.state.control.display.bubbleChart" cols="12">
+      <canvas-bubble-chart
+        :colors="$store.state.colorsInfo"
+      ></canvas-bubble-chart>
+    </v-col>
   </v-row>
 </template>
 
@@ -76,7 +74,6 @@ export default {
   },
   data() {
     return {
-      displayChart: false,
       barIcons: [
         {
           name: '$vuetify.icons.mdiPalette',

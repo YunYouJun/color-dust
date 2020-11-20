@@ -1,12 +1,17 @@
 <template>
   <div class="color-bar">
-    <v-alert border="left" :color="colors[0]" colored-border elevation="2">
+    <v-alert
+      border="left"
+      :color="leftBorderColor"
+      colored-border
+      elevation="2"
+    >
       <h3 class="title">
         <span class="label text-capitalize">{{ label }}</span>
         <span class="value font-weight-light text-uppercase ml-2">
           <span v-for="(color, i) in colors" :key="i">
             <i class="color-box" :style="{ backgroundColor: color }"></i>
-            <span>{{ color }}</span>
+            <span>{{ color ? color.toHexString() : '' }}</span>
           </span>
         </span>
         <v-divider class="mb-2"></v-divider>
@@ -19,7 +24,6 @@
 </template>
 
 <script>
-import { rgbToHex } from '~/packages/color-dust/utils'
 export default {
   props: {
     label: { type: String, default: 'Color' },
@@ -31,11 +35,18 @@ export default {
     },
   },
   computed: {
+    leftBorderColor() {
+      if (this.colors[0]) {
+        return this.colors[0].toHexString()
+      } else {
+        return 'black'
+      }
+    },
     background() {
       if (this.colors.length > 1) {
         let linearGradient = 'linear-gradient(to right'
         this.colors.forEach((color) => {
-          linearGradient += ',' + color
+          linearGradient += ',' + color.toHexString()
         })
         linearGradient += ')'
         return {
@@ -43,13 +54,10 @@ export default {
         }
       } else {
         return {
-          background: this.colors[0],
+          background: this.colors[0] ? this.colors[0].toHexString() : '',
         }
       }
     },
-  },
-  methods: {
-    rgbToHex,
   },
 }
 </script>

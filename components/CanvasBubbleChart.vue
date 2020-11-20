@@ -73,10 +73,9 @@ export default {
       if (this.$refs.selectColor) {
         const hex = this.$refs.selectColor.textContent
         navigator.clipboard.writeText(hex.toUpperCase())
-        this.$toast
-          .success
-          // `Copy <strong style="color:${this.selectColor};">${this.selectColor}</strong> successfully!`
-          ()
+        this.$toast.success(
+          `Copy <strong style="color:${this.selectColor};">${this.selectColor}</strong> successfully!`
+        )
       }
     },
     initBubbles(bubbles) {
@@ -158,13 +157,12 @@ export default {
       const dataset = []
       const len = colors.length
       const cStep = len < 360 ? 1 : Math.ceil(len / 360)
-      let color
       // console.log("maxWeight processColors",maxWeight)
       for (let i = 0; i < len; ) {
-        color = colors[i]
+        const colorInfo = colors[i]
         dataset.push({
-          weight: color.count,
-          color: color.hex,
+          weight: colorInfo.count,
+          color: colorInfo.color.toHexString(),
         })
         i += cStep
       }

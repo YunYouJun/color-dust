@@ -19,7 +19,7 @@
     }
   },
   "home": {
-    "link": {
+    "url": {
       "label": "Url For Picture",
       "error": "Please input image url!"
     },
@@ -46,5 +46,8 @@
       "content": "The dust is known, and the robbery is not young.",
       "from": "——Tang Lishen \"Tifa Hua Temple\""
     }
+  },
+  "tooltip": {
+    "finish": "Process completely."
   }
 }

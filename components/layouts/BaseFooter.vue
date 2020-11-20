@@ -1,12 +1,6 @@
 <template>
   <v-footer padless>
-    <v-card
-      flat
-      tile
-      :color="this.$store.state.theme.accentColor"
-      class="text-center"
-      width="100%"
-    >
+    <v-card flat tile :color="getFgColor" class="text-center" width="100%">
       <v-card-text>
         <v-btn
           v-for="(item, i) in items"
@@ -23,14 +17,15 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   data: () => ({
     items: [
-      // {
-      //   href: 'https://github.com/YunYouJun/color-dust',
-      //   icon: '$vuetify.icons.mdiGithub',
-      //   color: 'black',
-      // },
+      {
+        href: 'https://github.com/YunYouJun/color-dust',
+        icon: '$vuetify.icons.mdiGithub',
+        color: 'black',
+      },
       {
         href: 'https://github.com/YunYouJun',
         icon: '$vuetify.icons.mdiCloud',
@@ -43,5 +38,8 @@ export default {
       },
     ],
   }),
+  computed: {
+    ...mapGetters('theme', ['getFgColor']),
+  },
 }
 </script>

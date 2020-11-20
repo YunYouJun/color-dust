@@ -63,12 +63,12 @@ export default {
       const dataset = []
       const len = colors.length
       const cStep = len < 360 ? 1 : Math.ceil(len / 360)
-      let color
+      let colorInfo
       for (let i = 0; i < len; ) {
-        color = colors[i]
+        colorInfo = colors[i]
         dataset.push({
-          size: color.count,
-          text: color.hex,
+          size: colorInfo.count,
+          text: colorInfo.color.toHexString(),
         })
         i += cStep
       }

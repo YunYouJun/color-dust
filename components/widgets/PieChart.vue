@@ -89,11 +89,13 @@ export default {
           backgroundColor: [],
           data: [],
         })
-        topColors.forEach((color) => {
-          otherColorsCount -= color.count
-          this.config.data.labels.push(color.hex)
-          this.config.data.datasets[0].backgroundColor.push(color.hex)
-          this.config.data.datasets[0].data.push(color.count)
+        topColors.forEach((colorInfo) => {
+          otherColorsCount -= colorInfo.count
+          this.config.data.labels.push(colorInfo.color.toHexString())
+          this.config.data.datasets[0].backgroundColor.push(
+            colorInfo.color.toHexString()
+          )
+          this.config.data.datasets[0].data.push(colorInfo.count)
         })
       }
 

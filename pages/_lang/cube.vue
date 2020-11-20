@@ -55,7 +55,11 @@ export default {
     },
   },
   async mounted() {
-    const url = '/color-dust/images/chen.jpg'
+    // const url = '/color-dust/images/chen.jpg'
+    // const url = '/color-dust/images/07.jpg'
+    // const url = '/color-dust/images/girl.jpg'
+    // const url = '/color-dust/images/test.jpg'
+    const url = '/color-dust/images/夹心酱.jpg'
     const image = await readImage(url)
     await drawToCanvas(image, this.$refs.demo)
     this.getImageData()

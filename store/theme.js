@@ -1,7 +1,7 @@
 export const state = () => ({
   isExchanged: false,
-  primaryColor: '',
-  accentColor: '',
+  primaryColor: null,
+  accentColor: null,
 })
 
 export const mutations = {
@@ -19,16 +19,16 @@ export const mutations = {
 export const getters = {
   getBgColor(state) {
     if (!state.isExchanged) {
-      return state.primaryColor
+      return state.primaryColor ? state.primaryColor.toHexString() : ''
     } else {
-      return state.accentColor
+      return state.accentColor ? state.accentColor.toHexString() : ''
     }
   },
   getFgColor(state) {
     if (!state.isExchanged) {
-      return state.accentColor
+      return state.accentColor ? state.accentColor.toHexString() : ''
     } else {
-      return state.primaryColor
+      return state.primaryColor ? state.primaryColor.toHexString() : ''
     }
   },
 }

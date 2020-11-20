@@ -1,26 +1,47 @@
-import { ProcessInfo } from './typings'
-import { HSL } from './typings/color'
-import { rgbToHsl, hslToRgb, rgbToHex, getHslKey } from './utils'
+import { TinyColor } from '@ctrl/tinycolor'
+import { AnalysisInfo, BaseColorInfo, ColorInfo, ProcessInfo } from './typings'
+import { getHslKey, isTooDark, isTooLight } from './utils'
 export default class ColorDust {
   ctx: CanvasRenderingContext2D | null
   pixelRatio: number
   oriWidth: number
   oriHeight: number
-  colorsInfo: any[]
+  /**
+   * 各种色彩信息
+   */
+  colorsInfo: ColorInfo[]
   processInfo: ProcessInfo
-  mainColor: any[]
-  averageColor: string | undefined
-  clusterRes: any
+  /**
+   * 前三种主色调
+   */
+  mainColor: TinyColor[]
+  /**
+   * 平均色
+   */
+  averageColor: TinyColor
+  /**
+   * 迭代次数
+   */
+  iteration: number
   score: string
 
+  /**
+   * 图像是否水平
+   */
   isHorizontal: boolean
 
   /**
    * 初始种子
    */
-  initSeed: any
-  clusterColors: any
-  info: any
+  initSeed: ColorInfo[]
+  /**
+   * 簇 色彩
+   */
+  clusterColors: ColorInfo[]
+  /**
+   * 处理信息
+   */
+  info: AnalysisInfo
   constructor(public canvas: HTMLCanvasElement, public K: number = 6) {
     this.ctx = this.canvas.getContext('2d')
     this.pixelRatio = window.devicePixelRatio || 1
@@ -32,20 +53,36 @@ export default class ColorDust {
     this.oriHeight = this.canvas.height
     this.colorsInfo = []
     this.processInfo = {
-      colors: 0,
+      numberOfColors: 0,
       censusTime: 0,
       kmeansIteration: 0,
       kmeansTime: 0,
       top5Count: 0,
+
+      pixelCount: 0,
     }
     this.mainColor = []
-    this.averageColor = ''
-    this.clusterRes = {}
+    this.averageColor = new TinyColor()
+    this.iteration = 0
     this.score = ''
 
     this.isHorizontal = true
+
+    this.initSeed = []
+    this.clusterColors = []
+    this.info = {
+      total: 0,
+      top50Count: 0,
+      top20Count: 0,
+      top10Count: 0,
+      top5Count: 0,
+    }
   }
 
+  /**
+   * 读取文件
+   * @param url
+   */
   readFile(url: string | File) {
     // to base64
     if (url instanceof File) {
@@ -132,6 +169,9 @@ export default class ColorDust {
     })
   }
 
+  /**
+   * 统计图片信息
+   */
   censusImage() {
     const canvas = this.canvas
     const ctx = this.ctx
@@ -159,9 +199,6 @@ export default class ColorDust {
     if (!imageData) {
       return 'Can not read image data, maybe because of cross-domain limitation.'
     }
-    const keys = []
-    let r, g, b
-    let pixelCount = 0
     const pixelStep = imageData.height * imageData.width < 600 * 600 ? 1 : 2
     let colorStep = Math.round(
       0.1066 * this.K * this.K - 2.7463 * this.K + 17.2795
@@ -169,119 +206,98 @@ export default class ColorDust {
     colorStep = colorStep < 4 ? 4 : colorStep
 
     // for bubble
+    // reset
     let colorsInfo = []
-    let hsl: number[]
-    let key
     // get color
-    for (let row = 1; row < imageData.height - 1; ) {
-      for (let col = 1; col < imageData.width - 1; ) {
-        r = imageData.data[row * imageData.width * 4 + col * 4]
-        g = imageData.data[row * imageData.width * 4 + col * 4 + 1]
-        b = imageData.data[row * imageData.width * 4 + col * 4 + 2]
-        hsl = rgbToHsl(r, g, b)
-        if (hsl[2] > 97 || (hsl[2] > 95 && hsl[1] < 30)) {
-          col += pixelStep
-          continue // too bright
+    const processInfo = this.processInfo
+    const keys = []
+    for (let row = 1; row < imageData.height - 1; row += pixelStep) {
+      for (let col = 1; col < imageData.width - 1; col += pixelStep) {
+        const r = imageData.data[row * imageData.width * 4 + col * 4]
+        const g = imageData.data[row * imageData.width * 4 + col * 4 + 1]
+        const b = imageData.data[row * imageData.width * 4 + col * 4 + 2]
+
+        const color = new TinyColor({ r, g, b })
+        if (isTooLight(color) || isTooDark(color)) {
+          continue
         }
-        if (hsl[2] < 3 || (hsl[2] < 5 && hsl[1] < 30)) {
-          col += pixelStep
-          continue // too dark
-        }
-        pixelCount++
+        processInfo.pixelCount++
         // hex 作为 key 会很慢
-        key = getHslKey(hsl[0], hsl[1], hsl[2])
+        const key = getHslKey(color)
         const index = keys.indexOf(key)
 
         if (index < 0) {
           keys.push(key)
           colorsInfo.push({
             key,
+            color,
             count: 1,
-            r,
-            g,
-            b,
-            h: hsl[0],
-            s: hsl[1],
-            l: hsl[2],
-            hex: rgbToHex([r, g, b]),
             category: -1,
           })
         } else {
           // countquence
           colorsInfo[index].count++
         }
-        col += pixelStep
       }
-      row += pixelStep
     }
 
-    const processInfo = {
-      colors: 0,
-      censusTime: 0,
-      kmeansIteration: 0,
-      kmeansTime: 0,
-      top5Count: 0,
-
-      colorStep,
-      pixelCount,
-    }
-
+    processInfo.colorStep = colorStep
     processInfo.censusTime = new Date().getTime() - beginTime
-    processInfo.colors = colorsInfo.length
+    processInfo.numberOfColors = colorsInfo.length
 
     beginTime = new Date().getTime()
     // sort and filter rgbCensus
     colorsInfo.sort(function (pre, next) {
       return next.count - pre.count
     })
-    let len = colorsInfo.length
+
     // console.log('before filter: ', len)
-    colorsInfo = colorsInfo.filter((color) => {
+    colorsInfo = colorsInfo.filter((colorInfo) => {
       // isolated color
-      const flag = color.count < 5 - pixelStep && len > 400
+      const flag = colorInfo.count < 5 - pixelStep && colorsInfo.length > 400
       // filter it
       return !flag
     })
+
     // top three color
     this.mainColor = [
-      rgbToHex(colorsInfo[0]),
-      rgbToHex(colorsInfo[1]),
-      rgbToHex(colorsInfo[2]),
+      colorsInfo[0].color,
+      colorsInfo[1].color,
+      colorsInfo[2].color,
     ]
+
     // k-mean clustering
     const initSeed = this.chooseSeedColors(colorsInfo, this.K)
     this.initSeed = initSeed
-    this.clusterRes = this.kMC(colorsInfo, initSeed, 100)
-
-    this.clusterColors = this.clusterRes.seeds
-    this.clusterColors = this.clusterColors.map((color: HSL) => {
-      return rgbToHex(hslToRgb(color.h, color.s, color.l))
-    })
+    this.clusterColors = this.kMC(colorsInfo, initSeed, 100)
 
     let rCount = 0
     let gCount = 0
     let bCount = 0
     let fCount = 0
-    len = colorsInfo.length
-    while (len--) {
-      rCount += colorsInfo[len].r * colorsInfo[len].count
-      gCount += colorsInfo[len].g * colorsInfo[len].count
-      bCount += colorsInfo[len].b * colorsInfo[len].count
-      fCount += colorsInfo[len].count
-    }
 
-    this.averageColor = rgbToHex({
+    // 过滤后的 colorsInfo 长度
+    colorsInfo.forEach((colorInfo) => {
+      const rgbColor = colorInfo.color.toRgb()
+      rCount += rgbColor.r * colorInfo.count
+      gCount += rgbColor.g * colorInfo.count
+      bCount += rgbColor.b * colorInfo.count
+      fCount += colorInfo.count
+    })
+
+    this.averageColor = new TinyColor({
       r: Math.floor(rCount / fCount),
       g: Math.floor(gCount / fCount),
       b: Math.floor(bCount / fCount),
     })
 
     processInfo.kmeansTime = +new Date() - beginTime
-    processInfo.kmeansIteration = this.clusterRes.iteration
+    processInfo.kmeansIteration = this.iteration
     this.info = this.countColor(colorsInfo)
     processInfo.top5Count = this.info.top5Count * 100
-    this.colorsInfo = colorsInfo
     this.processInfo = processInfo
+
+    this.colorsInfo = colorsInfo
   }
 
   /**
@@ -289,41 +305,31 @@ export default class ColorDust {
    * @param {*} colors
    * @param {*} num
    */
-  chooseSeedColors(colors: any, num: number) {
+  chooseSeedColors(colors: ColorInfo[], num: number) {
     const initSeed = []
     const len = colors.length
     for (let i = 0; i < len; i++) {
       const l = initSeed.length
-      const color = colors[i]
+      const colorInfo = colors[i]
       // 第一个种子
       if (i === 0) {
-        color.category = 0
-        initSeed.push({
-          h: color.h,
-          s: color.s,
-          l: color.l,
-          category: color.category,
-          count: color.count,
-        })
+        colorInfo.category = 0
+        initSeed.push(colorInfo)
       } else {
         let j = 0
         for (; j < l; j++) {
-          const hDiff = Math.abs(initSeed[j].h - color.h)
-          const sDiff = Math.abs(initSeed[j].s - color.s)
-          const lDiff = Math.abs(initSeed[j].l - color.l)
-          if (hDiff + sDiff + lDiff < 45) {
+          const curSeed = initSeed[j].color.toHsl()
+          const hslColor = colorInfo.color.toHsl()
+          const hDiff = Math.abs(curSeed.h - hslColor.h)
+          const sDiff = Math.abs(curSeed.s - hslColor.s)
+          const lDiff = Math.abs(curSeed.l - hslColor.l)
+          if (hDiff + sDiff * 100 + lDiff * 100 < 45) {
             break
           }
         }
         if (j === l) {
-          color.category = initSeed.length
-          initSeed.push({
-            h: color.h,
-            s: color.s,
-            l: color.l,
-            category: color.category,
-            count: color.count,
-          })
+          colorInfo.category = initSeed.length
+          initSeed.push(colorInfo)
         }
         if (initSeed.length >= num) {
           break
@@ -333,76 +339,92 @@ export default class ColorDust {
     return initSeed
   }
 
-  kMC(colors: any, seeds: any, maxStep: number) {
-    let iteration = 0
+  /**
+   * K-Means 主计算过程
+   * @param colors 色彩们
+   * @param seeds 种子
+   * @param maxStep 最大迭代次数
+   */
+  kMC(colorsInfo: ColorInfo[], seeds: ColorInfo[], maxStep: number) {
+    this.iteration = 0
 
-    while (iteration++ < maxStep) {
+    while (this.iteration++ < maxStep) {
       // filter seeds
       seeds = seeds.filter((seed: any) => {
         return seed
       })
 
       // divide colors into different categories with duff's device
-      let len = colors.length
+      let len = colorsInfo.length
       let count = (len / 8) ^ 0
       let start = len % 8
       while (start--) {
-        this.classifyColor(colors[start], seeds)
+        this.classifyColor(colorsInfo[start], seeds)
       }
       while (count--) {
-        this.classifyColor(colors[--len], seeds)
-        this.classifyColor(colors[--len], seeds)
-        this.classifyColor(colors[--len], seeds)
-        this.classifyColor(colors[--len], seeds)
-        this.classifyColor(colors[--len], seeds)
-        this.classifyColor(colors[--len], seeds)
-        this.classifyColor(colors[--len], seeds)
-        this.classifyColor(colors[--len], seeds)
+        this.classifyColor(colorsInfo[--len], seeds)
+        this.classifyColor(colorsInfo[--len], seeds)
+        this.classifyColor(colorsInfo[--len], seeds)
+        this.classifyColor(colorsInfo[--len], seeds)
+        this.classifyColor(colorsInfo[--len], seeds)
+        this.classifyColor(colorsInfo[--len], seeds)
+        this.classifyColor(colorsInfo[--len], seeds)
+        this.classifyColor(colorsInfo[--len], seeds)
       }
 
       // compute center of category
-      len = colors.length
-      const hslCount = []
+      len = colorsInfo.length
+      const hslCount: BaseColorInfo[] = []
       let category: number
       while (len--) {
-        category = colors[len].category
+        category = colorsInfo[len].category
         if (!hslCount[category]) {
           hslCount[category] = {
-            h: 0,
-            s: 0,
-            l: 0,
-            count: colors[len].count,
+            color: new TinyColor({ h: 0, s: 0, l: 0 }),
+            count: colorsInfo[len].count,
           }
         } else {
-          hslCount[category].count += colors[len].count
+          hslCount[category].count += colorsInfo[len].count
         }
       }
-      len = colors.length
+      len = colorsInfo.length
       // 统计平均 hsl
-      while (len--) {
-        category = colors[len].category
-        hslCount[category].h +=
-          (colors[len].h * colors[len].count) / hslCount[category].count
-        hslCount[category].s +=
-          (colors[len].s * colors[len].count) / hslCount[category].count
-        hslCount[category].l +=
-          (colors[len].l * colors[len].count) / hslCount[category].count
-      }
+      colorsInfo.forEach((colorInfo) => {
+        category = colorInfo.category
+        const hslColor = hslCount[category].color.toHsl()
+        const colorInfoHSL = colorInfo.color.toHsl()
+        const hCount =
+          hslColor.h +
+          (colorInfoHSL.h * colorInfo.count) / hslCount[category].count
+        const sCount =
+          hslColor.s +
+          (colorInfoHSL.s * colorInfo.count) / hslCount[category].count
+        const lCount =
+          hslColor.l +
+          (colorInfoHSL.l * colorInfo.count) / hslCount[category].count
+
+        hslCount[category].color = new TinyColor({
+          h: hCount,
+          s: sCount,
+          l: lCount,
+        })
+      })
+
       // 每一个聚类种子都和附近的颜色差值很小
-      const flag = hslCount.every((ele, index) => {
+      const flag = hslCount.every((el, index) => {
+        const hslColor = el.color.toHsl()
+        const hslSeedColor = seeds[index].color.toHsl()
         return (
-          Math.abs(ele.h - seeds[index].h) < 0.5 &&
-          Math.abs(ele.s - seeds[index].s) < 0.5 &&
-          Math.abs(ele.l - seeds[index].l) < 0.5
+          Math.abs(hslColor.h - hslSeedColor.h) < 0.5 &&
+          Math.abs(hslColor.s - hslSeedColor.s) < 0.005 &&
+          Math.abs(hslColor.l - hslSeedColor.l) < 0.005
         )
       })
-      seeds = hslCount.map((ele, index) => {
+      seeds = hslCount.map((el, index) => {
         return {
-          h: ele.h,
-          s: ele.s,
-          l: ele.l,
+          color: el.color,
           category: index,
-          count: ele.count,
+          count: el.count,
         }
       })
       if (flag) {
@@ -410,57 +432,58 @@ export default class ColorDust {
       }
     }
     // console.log('KMC iteration ' + iterationCount)
-    seeds.sort(function (pre: HSL, next: HSL) {
-      const preRgb = hslToRgb(pre.h, pre.s, pre.l)
-      const preTotal = preRgb[0] + preRgb[1] + preRgb[2]
+    seeds.sort((pre: ColorInfo, next: ColorInfo) => {
+      const preRgb = pre.color.toRgb()
+      const preTotal = preRgb.r + preRgb.g + preRgb.b
       // let next_h = next.h;
       // next_h = next_h < 30 ? (next_h+330) : next_h;
-      const nextRgb = hslToRgb(next.h, next.s, next.l)
-      const nextTotal = nextRgb[0] + nextRgb[1] + nextRgb[2]
+      const nextRgb = next.color.toRgb()
+      const nextTotal = nextRgb.r + nextRgb.g + nextRgb.b
       return nextTotal - preTotal
     })
-    return {
-      seeds,
-      iteration,
-    }
+    return seeds
   }
 
-  // 颜色分类（蕨类过程）
-  classifyColor(color: any, classes: HSL[]) {
+  /**
+   * 颜色分类（蕨类过程）
+   * @param color
+   * @param classes
+   */
+  classifyColor(colorInfo: ColorInfo, classes: ColorInfo[]) {
     let len = classes.length
     let min = 10000
-    let minIndex
+    let minIndex = -1
     while (len--) {
+      const hslColor = colorInfo.color.toHsl()
+      const hslClass = classes[len].color.toHsl()
       const distance =
-        Math.abs(classes[len].h - color.h) +
-        Math.abs(classes[len].s - color.s) +
-        Math.abs(classes[len].l - color.l)
+        Math.abs(hslClass.h - hslColor.h) +
+        Math.abs(hslClass.s - hslColor.s) * 100 +
+        Math.abs(hslClass.l - hslColor.l) * 100
       if (distance < min) {
         min = distance
         minIndex = len
       }
     }
     // 颜色所属的类别
-    color.category = minIndex
+    colorInfo.category = minIndex
   }
 
-  countColor(colorInfo: any) {
-    const info = {
-      total: 0,
-      top50Count: 0,
-      top20Count: 0,
-      top10Count: 0,
-      top5Count: 0,
-    }
+  /**
+   * color 计数
+   * @param colorInfo
+   */
+  countColor(colorsInfo: ColorInfo[]) {
+    const info = this.info
     let total = 0
     let top50Count = 0
     let top20Count = 0
     let top10Count = 0
     let top5Count = 0
-    let len = colorInfo.length
+    let len = colorsInfo.length
     let color
     while (len--) {
-      color = colorInfo[len]
+      color = colorsInfo[len]
       total += color.count
       if (len < 50) {
         top50Count += color.count
@@ -475,7 +498,7 @@ export default class ColorDust {
         }
       }
     }
-    len = colorInfo.length
+    len = colorsInfo.length
     info.total = total
     info.top50Count = top50Count / total
     info.top20Count = top20Count / total
@@ -484,6 +507,9 @@ export default class ColorDust {
     return info
   }
 
+  /**
+   * 绘制调色板
+   */
   drawPalette() {
     const pixelRatio = this.pixelRatio
     const canvas = this.canvas
@@ -493,8 +519,7 @@ export default class ColorDust {
     const interval = len * (this.K < 10 ? 0.02 : 0.01)
     // interval *= pixelRatio;
     const p = (len - (this.K - 1) * interval) / this.K
-    const colors = this.clusterColors
-    if (colors.length === 0) {
+    if (this.clusterColors.length === 0) {
       return
     }
     if (this.isHorizontal) {
@@ -513,7 +538,7 @@ export default class ColorDust {
       )
     }
     for (let i = 0; i < this.K; i++) {
-      ctx.fillStyle = colors[i]
+      ctx.fillStyle = this.clusterColors[i].color.toHexString()
       if (this.isHorizontal) {
         ctx.fillRect(
           (p + interval) * i,

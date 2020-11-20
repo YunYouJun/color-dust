@@ -1,28 +1,42 @@
 <template>
-  <v-card ripple hover :color="color" class="color-card" @click="copyColorHex">
+  <v-card
+    ripple
+    hover
+    :color="colorHex"
+    class="color-card"
+    @click="copyColorHex"
+  >
     <h4
       class="pa-0 color-text text-uppercase subtitle-2"
       style="font-family: Source Code Pro !important"
     >
-      {{ color }}
+      {{ colorHex }}
     </h4>
   </v-card>
 </template>
 
 <script>
+import { TinyColor } from '@ctrl/tinycolor'
 export default {
   props: {
     color: {
-      type: String,
-      default: '',
+      type: Object,
+      default() {
+        return new TinyColor()
+      },
+    },
+  },
+  computed: {
+    colorHex() {
+      return this.color.toHexString().toUpperCase()
     },
   },
   methods: {
     copyColorHex() {
-      const curColor = this.color.toUpperCase()
+      const curColor = this.colorHex
       navigator.clipboard.writeText(curColor)
       this.$toast.success(
-        `Copy <strong style="color:${curColor}">${curColor}</strong> successfully!`
+        `Copy 「<strong style="color:${curColor}">${curColor}</strong>」 successfully!`
       )
     },
   },

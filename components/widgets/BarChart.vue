@@ -50,7 +50,7 @@ export default {
       const barHeight = 25
       const margin = {
         top: 16,
-        // display 16 hex color
+        // let margin to display 16 hex color
         left: 72,
         bottom: 0,
         right: 0,
@@ -75,7 +75,7 @@ export default {
 
       const yScale = d3
         .scaleBand()
-        .domain(barChartData.map((d) => d.hex))
+        .domain(barChartData.map((d) => d.color.toHexString()))
         .rangeRound([margin.top, height])
 
       // 颜色条
@@ -87,9 +87,9 @@ export default {
         .data(barChartData)
         .join('rect')
         .style('mix-blend-mode', 'multiply')
-        .attr('fill', (d) => d.hex)
+        .attr('fill', (d) => d.color.toHexString())
         .attr('x', xScale(0))
-        .attr('y', (d) => yScale(d.hex))
+        .attr('y', (d) => yScale(d.color.toHexString()))
         .attr('width', (d) => xScale(d.count))
         .attr('height', barHeight)
 
@@ -101,7 +101,7 @@ export default {
         .append('text')
         .text((d) => d.count)
         .attr('x', (d) => xScale(d.count) + margin.left + 5)
-        .attr('y', (d) => yScale(d.hex) + 19)
+        .attr('y', (d) => yScale(d.color.toHexString()) + 19)
         .attr('text-anchor', 'start')
         .attr('font-family', 'Source Code Pro')
         .attr('fill', this.$vuetify.theme.dark ? 'white' : 'black')

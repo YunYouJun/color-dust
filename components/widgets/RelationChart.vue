@@ -4,7 +4,6 @@
 
 <script>
 import * as d3 from 'd3'
-import { hslToRgb, rgbToHex } from '~/packages/color-dust/utils'
 export default {
   data() {
     return {
@@ -23,14 +22,14 @@ export default {
   methods: {
     filterData() {
       const colorsInfo = this.$store.state.colorsInfo.slice(0, 300)
-      colorsInfo.forEach((color) => {
+      colorsInfo.forEach((colorInfo) => {
         this.links.push({
-          source: color.category,
-          target: color.key,
+          source: colorInfo.category,
+          target: colorInfo.key,
         })
         this.nodes.push({
-          id: color.key,
-          hex: color.hex,
+          id: colorInfo.key,
+          hex: colorInfo.color.toHexString(),
         })
       })
 
@@ -39,7 +38,7 @@ export default {
       initSeed.forEach((seed) => {
         this.nodes.push({
           id: seed.category,
-          hex: rgbToHex(hslToRgb(seed.h, seed.s, seed.l)),
+          hex: seed.color.toHexString(),
         })
       })
     },

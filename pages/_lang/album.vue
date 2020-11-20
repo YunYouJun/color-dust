@@ -35,7 +35,6 @@
 
 <script>
 import ColorDust from '~/packages/color-dust'
-import { isDark } from '~/packages/color-dust/utils'
 export default {
   head() {
     return {
@@ -52,10 +51,10 @@ export default {
       const url = img.slice(5, -2)
       await this.colorDust.readFile(url)
       const mainColor = this.colorDust.mainColor
-
       const primaryColor = this.colorDust.averageColor
+
       const accentColor = mainColor[0]
-      this.$vuetify.theme.dark = isDark(accentColor)
+      this.$vuetify.theme.dark = accentColor.isDark()
 
       this.$store.commit('theme/setPrimaryColor', primaryColor)
       this.$store.commit('theme/setAccentColor', accentColor)

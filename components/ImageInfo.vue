@@ -1,7 +1,11 @@
 <template>
   <div class="info-wrap">
     <v-alert border="left" colored-border color="success">
-      {{ $t('color.info.amount', { amount: $store.state.processInfo.colors }) }}
+      {{
+        $t('color.info.amount', {
+          amount: $store.state.processInfo.numberOfColors,
+        })
+      }}
     </v-alert>
     <v-alert border="left" colored-border color="info">
       {{ $t('color.info.time', { time: $store.state.processInfo.censusTime }) }}

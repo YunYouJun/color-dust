@@ -1,3 +1,5 @@
+import { TinyColor } from '@ctrl/tinycolor'
+
 export const state = () => ({
   locales: ['en', 'zh'],
   locale: 'zh',
@@ -5,15 +7,15 @@ export const state = () => ({
   colorsInfo: [
     {
       count: 1000,
-      hex: '#66CCFF',
+      color: new TinyColor('#66CCFF'),
     },
     {
       count: 500,
-      hex: '#000000',
+      color: new TinyColor('#000000'),
     },
     {
       count: 200,
-      hex: '#999999',
+      color: new TinyColor('#999999'),
     },
   ],
   loopColors: [
@@ -29,10 +31,13 @@ export const state = () => ({
     kmeansIteration: 0,
     kmeansTime: 0,
     top5Count: 0,
-    showQr: false,
   },
-  mainColor: ['#000000', '#333333', '#666666'],
-  averageColor: '#000000',
+  mainColor: [
+    new TinyColor('#000000'),
+    new TinyColor('#333333'),
+    new TinyColor('#666666'),
+  ],
+  averageColor: new TinyColor('#000000'),
 })
 
 export const mutations = {
@@ -80,12 +85,11 @@ export const actions = {
       kmeansIteration: 0,
       kmeansTime: 0,
       top5Count: 0,
-      showQr: false,
     })
     commit('setMainColor', [])
-    commit('setAverageColor', '')
+    commit('setAverageColor', null)
     // theme
-    commit('theme/setPrimaryColor', '')
-    commit('theme/setAccentColor', '')
+    commit('theme/setPrimaryColor', null)
+    commit('theme/setAccentColor', null)
   },
 }

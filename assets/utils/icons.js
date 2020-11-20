@@ -19,4 +19,5 @@ export {
   mdiRelationManyToMany,
   mdiLink,
   mdiCube,
+  mdiChartBubble,
 } from '@mdi/js'

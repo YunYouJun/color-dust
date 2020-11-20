@@ -1,12 +1,7 @@
 <template>
   <div>
-    <v-card
-      :loading="loading"
-      class="showcase-wrap"
-      :class="{ censused: bgColor }"
-      :style="{ backgroundColor: bgColor }"
-    >
-      <canvas ref="canvasShowcase" class="showcase"></canvas>
+    <v-card :loading="loading" class="showcase-wrap">
+      <canvas ref="canvasShowcase" class="showcase censused"></canvas>
     </v-card>
     <v-alert
       color="primary"
@@ -15,15 +10,9 @@
       class="mt-4"
       elevation="2"
     >
+      <chart-control></chart-control>
       <v-row>
-        <v-col cols="1">
-          <v-checkbox v-model="displayChart" title="Display Chart">
-            <template #label>
-              <v-icon>$vuetify.icons.mdiChartPie</v-icon>
-            </template>
-          </v-checkbox>
-        </v-col>
-        <v-col cols="9">
+        <v-col cols="10">
           <v-text-field
             v-model="url"
             :label="$t('home.url.label')"
@@ -83,8 +72,11 @@
 
 <script>
 import ColorDust from '~/packages/color-dust'
-import { isDark } from '~/packages/color-dust/utils'
+import ChartControl from '~/components/control/ChartControl'
 export default {
+  components: {
+    ChartControl,
+  },
   data() {
     return {
       loading: false,
@@ -100,14 +92,6 @@ export default {
   computed: {
     bgColor() {
       return this.$store.state.theme.primaryColor
-    },
-    displayChart: {
-      get() {
-        return this.$store.state.main.displayChart
-      },
-      set(val) {
-        this.$store.commit('main/setDisplayChart', val)
-      },
     },
   },
   mounted() {
@@ -125,12 +109,12 @@ export default {
     },
     handleClearClick() {
       this.colorDust.clearCanvas()
+      this.file = null
       this.$store.dispatch('resetApp')
     },
     async startProcess(type) {
       if (type === 'file') {
         if (!this.file) {
-          this.$toast.error(this.$t('home.upload.error'))
           return
         }
         this.loading = true
@@ -150,10 +134,6 @@ export default {
 
       const colorsInfo = this.colorDust.colorsInfo
       const mainColor = this.colorDust.mainColor
-      const primaryColor = this.colorDust.averageColor
-      const accentColor = mainColor[0]
-
-      this.$vuetify.theme.dark = isDark(accentColor)
 
       this.$store.commit('setColorsInfo', colorsInfo)
       this.$store.commit('setClusterColors', this.colorDust.clusterColors)
@@ -164,6 +144,9 @@ export default {
       this.$store.commit('colors/setTotal', this.colorDust.info.total)
       this.$store.commit('colors/setInitSeed', this.colorDust.initSeed)
       // theme
+      const primaryColor = this.colorDust.averageColor
+      const accentColor = mainColor[0]
+      this.$vuetify.theme.dark = accentColor.isDark()
       this.$store.commit('theme/setPrimaryColor', primaryColor)
       this.$store.commit('theme/setAccentColor', accentColor)
       // draw
@@ -172,7 +155,7 @@ export default {
       }
 
       this.loading = false
-      this.$toast.success('处理完成')
+      this.$toast.success(this.$t('tooltip.finish'))
     },
   },
 }
