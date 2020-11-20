@@ -1,5 +1,5 @@
 import { TinyColor } from '@ctrl/tinycolor'
-import { AnalysisInfo, BaseColorInfo, ColorInfo, ProcessInfo } from './typings'
+import { AnalysisInfo, BaseColorInfo, ColorInfo, ProcessInfo } from './types'
 import { getHslKey, isTooDark, isTooLight } from './utils'
 export default class ColorDust {
   ctx: CanvasRenderingContext2D | null
