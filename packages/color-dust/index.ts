@@ -88,7 +88,7 @@ export default class ColorDust {
     if (url instanceof File) {
       const reader = new FileReader()
       reader.readAsDataURL(url)
-      return new Promise((resolve) => {
+      return new Promise<void>((resolve) => {
         reader.onload = async (e) => {
           if (e.target) {
             await this.drawToCanvas(e.target.result as string)
@@ -99,7 +99,7 @@ export default class ColorDust {
       })
     } else {
       const xhr = new XMLHttpRequest()
-      return new Promise((resolve) => {
+      return new Promise<void>((resolve) => {
         xhr.onload = async (e) => {
           if (e.target) {
             url = URL.createObjectURL((e.target as any).response)
@@ -123,7 +123,7 @@ export default class ColorDust {
     const img = new Image()
     img.src = src
     img.crossOrigin = 'anonymous'
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       img.onload = () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height)
         let _w = 0

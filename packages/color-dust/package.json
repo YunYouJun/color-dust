@@ -8,6 +8,10 @@
     "email": "me@yunyoujun.cn",
     "url": "https://www.yunyoujun.cn"
   },
+  "scripts": {
+    "build": "yarn clean && tsc",
+    "clean": "rm -rf dist"
+  },
   "license": "MIT",
   "homepage": "https://github.com/YunYouJun/color-dust/packages/color-dust#readme",
   "bugs": {
@@ -23,5 +27,11 @@
     "color",
     "info",
     "ai"
-  ]
+  ],
+  "devDependencies": {
+    "typescript": "^4.2.3"
+  },
+  "dependencies": {
+    "@ctrl/tinycolor": "^3.4.0"
+  }
 }
