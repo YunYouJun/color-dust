@@ -1,4 +1,4 @@
-const options = {"workboxURL":"https://cdn.jsdelivr.net/npm/workbox-cdn@5.1.4/workbox/workbox-sw.js","importScripts":[],"config":{"debug":false},"clientsClaim":true,"skipWaiting":true,"cleanupOutdatedCaches":true,"offlineAnalytics":false,"preCaching":["/color-dust/?standalone=true","/color-dust/?standalone=true"],"runtimeCaching":[{"urlPattern":"/color-dust/_nuxt/","handler":"CacheFirst","method":"GET","strategyPlugins":[]},{"urlPattern":"/color-dust/","handler":"NetworkFirst","method":"GET","strategyPlugins":[]},{"urlPattern":"/color-dust/_nuxt/","handler":"CacheFirst","method":"GET","strategyPlugins":[]},{"urlPattern":"/color-dust/","handler":"NetworkFirst","method":"GET","strategyPlugins":[]}],"offlinePage":null,"pagesURLPattern":"/color-dust/","offlineStrategy":"NetworkFirst"}
+const options = {"workboxURL":"https://cdn.jsdelivr.net/npm/workbox-cdn@5.1.4/workbox/workbox-sw.js","importScripts":[],"config":{"debug":false},"cacheOptions":{"cacheId":"color-dust-prod","directoryIndex":"/","revision":"zmpiTSJ4WmXa"},"clientsClaim":true,"skipWaiting":true,"cleanupOutdatedCaches":true,"offlineAnalytics":false,"preCaching":[{"revision":"zmpiTSJ4WmXa","url":"/color-dust/?standalone=true"}],"runtimeCaching":[{"urlPattern":"/color-dust/_nuxt/","handler":"CacheFirst","method":"GET","strategyPlugins":[]},{"urlPattern":"/color-dust/","handler":"NetworkFirst","method":"GET","strategyPlugins":[]}],"offlinePage":null,"pagesURLPattern":"/color-dust/","offlineStrategy":"NetworkFirst"}
 
 importScripts(...[options.workboxURL, ...options.importScripts])
 
@@ -50,13 +50,36 @@ function precacheAssets(workbox, options) {
   }
 }
 
+
 function runtimeCaching(workbox, options) {
+  const requestInterceptor = {
+    requestWillFetch({ request }) {
+      if (request.cache === 'only-if-cached' && request.mode === 'no-cors') {
+        return new Request(request.url, { ...request, cache: 'default', mode: 'no-cors' })
+      }
+      return request
+    },
+    fetchDidFail(ctx) {
+      ctx.error.message =
+        '[workbox] Network request for ' + ctx.request.url + ' threw an error: ' + ctx.error.message
+      console.error(ctx.error, 'Details:', ctx)
+    },
+    handlerDidError(ctx) {
+      ctx.error.message =
+        `[workbox] Network handler threw an error: ` + ctx.error.message
+      console.error(ctx.error, 'Details:', ctx)
+      return null
+    }
+  }
+
   for (const entry of options.runtimeCaching) {
     const urlPattern = new RegExp(entry.urlPattern)
     const method = entry.method || 'GET'
 
     const plugins = (entry.strategyPlugins || [])
       .map(p => new (getProp(workbox, p.use))(...p.config))
+
+    plugins.unshift(requestInterceptor)
 
     const strategyOptions = { ...entry.strategyOptions, plugins }
 
